@@ -94,7 +94,7 @@ intellijPlatform {
 }
 
 tasks.publishPlugin {
-    providers.gradleProperty("publishZip").orNull?.let { archiveFile.set(layout.projectDirectory.file(it)) }
+    providers.gradleProperty("publishZip").orNull?.let { archiveFiles.setFrom(layout.projectDirectory.file(it)) }
 }
 
 tasks.test {

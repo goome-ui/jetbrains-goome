@@ -10,6 +10,7 @@
 
 <p align="center">
   <img src="https://goome-ui.github.io/docs/assets/badges/jetbrains-2024-3.svg" alt="JetBrains 2024.3+">
+  <a href="https://plugins.jetbrains.com/plugin/36174-goome"><img src="https://goome-ui.github.io/docs/assets/badges/jetbrains-marketplace.svg" alt="JetBrains Marketplace"></a>
   <img src="https://goome-ui.github.io/docs/assets/badges/langs-c-csharp-python-java.svg" alt="C, C#, Python, Java">
   <img src="https://goome-ui.github.io/docs/assets/badges/license-gpl-3.svg" alt="GPL-3.0">
 </p>
@@ -33,10 +34,9 @@
 <br>
 
 <p align="center">
-1. Grab <code>jetbrains-goome-x.y.z.zip</code> from the <a href="https://github.com/goome-ui/jetbrains-goome/releases/latest">latest release</a>, dont unzip it<br>
-2. In your IDE open <b>Settings > Plugins</b>, click the gear at the top and pick <b>Install Plugin from Disk...</b><br>
-3. Pick the .zip you downloaded and restart when it asks, done<br> <br>
-Works in 2024.3 or newer. JetBrains Marketplace is coming soon.
+Its on the <a href="https://plugins.jetbrains.com/plugin/36174-goome">JetBrains Marketplace</a>. In your IDE open <b>Settings > Plugins</b>, search <b>goome</b> on the Marketplace tab, install it and restart when it asks.<br> <br>
+Or from disk: grab <code>jetbrains-goome-x.y.z.zip</code> from the <a href="https://github.com/goome-ui/jetbrains-goome/releases/latest">latest release</a>, dont unzip it, then in <b>Settings > Plugins</b> click the gear and pick <b>Install Plugin from Disk...</b><br> <br>
+Works in 2024.3 or newer.
 </p>
 </details>
 

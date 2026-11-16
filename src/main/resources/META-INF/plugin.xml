@@ -1,0 +1,47 @@
+<idea-plugin>
+    <id>io.github.goomeui.goome</id>
+    <name>goome</name>
+    <vendor url="https://goome-ui.github.io/docs/">goome-ui</vendor>
+    <description><![CDATA[
+<p>Live templates, a new project action, a .goome.json preview and quick docs for <a href="https://goome-ui.github.io/docs/">goome</a>, the see-through overlay and ui library.</p>
+<ul>
+<li>type <code>goome</code> in C, C#, Python or Java and pick a template, same names as the VS Code extension</li>
+<li><b>Tools &gt; goome: New Project</b> runs goome-cli and opens what it made</li>
+<li>.goome.json and .goome-theme.json get checked against the goome schemas while you type</li>
+<li>.goome.json opens with a live read only preview, plus buttons that copy the C, C#, Python or Java code</li>
+<li>quick docs for <code>goome_*</code> C functions, and <b>goome: Search Docs</b> everywhere</li>
+</ul>
+<p>Works in Rider, CLion, IntelliJ IDEA and PyCharm, each gets the parts that fit it.</p>
+]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.json</depends>
+    <depends optional="true" config-file="goome-java.xml">com.intellij.java</depends>
+    <depends optional="true" config-file="goome-python.xml">com.intellij.modules.python</depends>
+    <depends optional="true" config-file="goome-c.xml">com.intellij.modules.clion</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType name="goome project" implementationClass="io.github.goomeui.goome.GoomeProjectFileType" fieldName="INSTANCE" language="JSON" patterns="*.goome.json"/>
+        <fileType name="goome theme" implementationClass="io.github.goomeui.goome.GoomeThemeFileType" fieldName="INSTANCE" language="JSON" patterns="*.goome-theme.json"/>
+        <fileEditorProvider implementation="io.github.goomeui.goome.preview.GoomePreviewProvider"/>
+        <applicationService serviceImplementation="io.github.goomeui.goome.GoomeSettings"/>
+        <applicationConfigurable parentId="tools" instance="io.github.goomeui.goome.GoomeConfigurable" id="goome.settings" displayName="goome"/>
+        <notificationGroup id="goome" displayType="BALLOON"/>
+        <platform.backend.documentation.targetProvider implementation="io.github.goomeui.goome.docs.GoomeDocTargets"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="JavaScript.JsonSchema">
+        <ProviderFactory implementation="io.github.goomeui.goome.GoomeSchemas"/>
+    </extensions>
+
+    <actions>
+        <group id="goome.Tools" text="goome" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action id="goome.NewProject" class="io.github.goomeui.goome.newproject.NewProjectAction" text="goome: New Project..." description="Make a goome project with goome-cli and open it">
+                <add-to-group group-id="WelcomeScreen.QuickStart" anchor="last"/>
+            </action>
+            <action id="goome.SearchDocs" class="io.github.goomeui.goome.docs.SearchDocsAction" text="goome: Search Docs..." description="Find a goome function and open its docs"/>
+            <action id="goome.OpenBuilder" class="io.github.goomeui.goome.preview.OpenBuilderAction" text="goome: Open UI Builder" description="Open the goome UI builder in the browser"/>
+        </group>
+    </actions>
+</idea-plugin>

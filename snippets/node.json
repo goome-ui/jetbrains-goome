@@ -7,31 +7,30 @@
       "const goome = require(\"goome\");",
       "",
       "function main() {",
-      "\tlet g;",
-      "\ttry {",
-      "\t\tg = goome.open(\"${2:my overlay}\");",
-      "\t} catch (e) {",
-      "\t\tconsole.error(`couldnt open an overlay: \\${e.message}`);",
-      "\t\treturn 1;",
-      "\t}",
-      "\tconst ui = g.ui();",
-      "\tconst win = { x: 60, y: 60, w: 280, h: 0, open: true };",
-      "\twhile (win.open) {",
-      "\t\tfor (const ev of g.events(16)) {",
-      "\t\t\tif (ev.type === goome.QUIT) win.open = false;",
-      "\t\t\tui.feed(ev);",
-      "\t\t}",
-      "\t\tif (!win.open || !ui.begin(0)) continue;",
-      "\t\tif (ui.window(\"$2\", win, goome.WIN_MOVE | goome.WIN_CLOSE)) {",
-      "\t\t\tui.label(\"${3:im on top of everything}\");",
-      "\t\t\t$0",
-      "\t\t}",
-      "\t\tui.windowEnd();",
-      "\t\tui.end();",
-      "\t}",
-      "\tui.close();",
-      "\tg.close();",
-      "\treturn 0;",
+      "  let g;",
+      "  try {",
+      "    g = goome.open(\"${1:my overlay}\");",
+      "  } catch (e) {",
+      "    console.error(\"couldnt open an overlay: \" + String(e));",
+      "    return 1;",
+      "  }",
+      "  const ui = g.ui();",
+      "  const win = { x: 60, y: 60, w: 280, open: true };",
+      "  while (win.open) {",
+      "    for (const ev of g.events(16)) {",
+      "      if (ev.type === goome.QUIT) win.open = false;",
+      "      ui.feed(ev);",
+      "    }",
+      "    if (!win.open) break;",
+      "    ui.frame(0, () => {",
+      "      ui.window(\"$1\", win, goome.WIN_MOVE | goome.WIN_CLOSE, () => {",
+      "        ui.label(\"${2:im on top of everything}\");",
+      "        $0",
+      "      });",
+      "    });",
+      "  }",
+      "  g.close();",
+      "  return 0;",
       "}",
       "",
       "process.exitCode = main();"
@@ -45,30 +44,30 @@
       "const goome = require(\"goome\");",
       "",
       "function main() {",
-      "\tlet g;",
-      "\ttry {",
-      "\t\tg = goome.openApp(\"${2:My App}\", ${3:960}, ${4:640});",
-      "\t} catch (e) {",
-      "\t\tconsole.error(`couldnt open a window: \\${e.message}`);",
-      "\t\treturn 1;",
-      "\t}",
-      "\tconst ui = g.ui();",
-      "\tlet running = true;",
-      "\twhile (running) {",
-      "\t\tfor (const ev of g.events(16)) {",
-      "\t\t\tif (ev.type === goome.QUIT || ev.type === goome.CLOSE) running = false;",
-      "\t\t\tui.feed(ev);",
-      "\t\t}",
-      "\t\tif (!running || !ui.begin(0)) continue;",
-      "\t\tui.app(\"$2\");",
-      "\t\tui.heading(\"${5:Hello}\");",
-      "\t\t$0",
-      "\t\tui.appEnd();",
-      "\t\tui.end();",
-      "\t}",
-      "\tui.close();",
-      "\tg.close();",
-      "\treturn 0;",
+      "  let g;",
+      "  try {",
+      "    g = goome.openApp(\"${1:My App}\", ${2:960}, ${3:640});",
+      "  } catch (e) {",
+      "    console.error(\"couldnt open a window: \" + String(e));",
+      "    return 1;",
+      "  }",
+      "  const ui = g.ui();",
+      "  let running = true;",
+      "  while (running) {",
+      "    for (const ev of g.events(16)) {",
+      "      if (ev.type === goome.QUIT || ev.type === goome.CLOSE) running = false;",
+      "      ui.feed(ev);",
+      "    }",
+      "    if (!running) break;",
+      "    ui.frame(0, () => {",
+      "      ui.app(\"$1\", 0, () => {",
+      "        ui.heading(\"${4:Hello}\");",
+      "        $0",
+      "      });",
+      "    });",
+      "  }",
+      "  g.close();",
+      "  return 0;",
       "}",
       "",
       "process.exitCode = main();"
@@ -79,20 +78,21 @@
     "description": "main loop with poll and pace, only redraws when something changed",
     "body": [
       "const pace = new goome.Pacer(${1:60});",
-      "let running = true, dirty = true;",
+      "let running = true;",
+      "let dirty = true;",
       "while (running) {",
-      "\tconst wait = dirty || ${2:ui}.animating ? pace.wait() : 500;",
-      "\tfor (let ev = ${3:g}.poll(wait); ev; ev = $3.poll(0)) {",
-      "\t\tif (ev.type === goome.QUIT || ev.type === goome.CLOSE) running = false;",
-      "\t\t$2.feed(ev);",
-      "\t\tdirty = true;",
-      "\t}",
-      "\tif (!running) break;",
-      "\tif (!dirty && !$2.animating) continue;",
-      "\tdirty = false;",
-      "\tif (!$2.begin(0)) continue;",
-      "\t$0",
-      "\t$2.end();",
+      "  const busy = dirty || ${2:ui}.animating;",
+      "  for (const ev of ${3:g}.events(busy ? pace.wait() : 500)) {",
+      "    if (ev.type === goome.QUIT || ev.type === goome.CLOSE) running = false;",
+      "    $2.feed(ev);",
+      "    dirty = true;",
+      "  }",
+      "  if (!running) break;",
+      "  if (!(dirty || $2.animating)) continue;",
+      "  dirty = false;",
+      "  $2.frame(0, () => {",
+      "    $0",
+      "  });",
       "}"
     ]
   },
@@ -100,13 +100,12 @@
     "prefix": "goome-window",
     "description": "ui window with a label and a button",
     "body": [
-      "if (ui.window(\"${1:Window}\", ${2:win}, goome.WIN_MOVE | goome.WIN_RESIZE | goome.WIN_COLLAPSE)) {",
-      "\tui.label(\"${3:hello}\");",
-      "\tif (ui.button(\"${4:Click me}\")) {",
-      "\t\t$0",
-      "\t}",
-      "}",
-      "ui.windowEnd();"
+      "ui.window(\"${1:Window}\", ${2:win}, goome.WIN_MOVE | goome.WIN_RESIZE | goome.WIN_COLLAPSE, () => {",
+      "  ui.label(\"${3:hello}\");",
+      "  if (ui.button(\"${4:Click me}\")) {",
+      "    $0",
+      "  }",
+      "});"
     ]
   },
   "goome canvas": {
@@ -115,11 +114,11 @@
     "body": [
       "const c = ${1:g}.begin(0);",
       "if (c) {",
-      "\tc.clear();",
-      "\tc.roundRect(${2:40}, ${3:40}, ${4:200}, ${5:80}, 10, 0xEC1B1D22);",
-      "\tc.text($2 + 12, $3 + 12, \"${6:hello}\", 0xFFE9EBEE, true);",
-      "\t$0",
-      "\t$1.end(c, [[$2, $3, $4, $5]]);",
+      "  c.clear();",
+      "  c.roundRect(${2:40}, ${3:40}, ${4:200}, ${5:80}, 10, 0xec1b1d22);",
+      "  c.text($2 + 12, $3 + 12, \"${6:hello}\", 0xffe9ebee, true);",
+      "  $0",
+      "  $1.end(c, [[$2, $3, $4, $5]]);",
       "}"
     ]
   },
@@ -149,7 +148,7 @@
     "description": "button",
     "body": [
       "if (ui.button(\"${1:Click me}\")) {",
-      "\t$0",
+      "  $0",
       "}"
     ]
   },
@@ -199,9 +198,9 @@
   },
   "goome password": {
     "prefix": "goome-password",
-    "description": "password input",
+    "description": "password input with a hint",
     "body": [
-      "${2:password} = ui.password(\"${1:Password}\", $2, null, 0, ${3:64});"
+      "${2:password} = ui.password(\"${1:Password}\", $2, \"${3:hint}\");"
     ]
   },
   "goome combo": {
@@ -215,7 +214,9 @@
     "prefix": "goome-selectable",
     "description": "selectable list row",
     "body": [
-      "if (ui.selectable(\"${1:Item}\", ${2:picked} === ${3:0})) $2 = $3;"
+      "if (ui.selectable(\"${1:Item}\", ${2:picked} === ${3:0})) {",
+      "  $2 = $3;",
+      "}"
     ]
   },
   "goome tabs": {
@@ -224,7 +225,7 @@
     "body": [
       "${2:tab} = ui.tabs(\"${1:tabs}\", [\"${3:General}\", \"${4:Advanced}\"], $2);",
       "if ($2 === 0) {",
-      "\t$0",
+      "  $0",
       "}"
     ]
   },
@@ -233,16 +234,16 @@
     "description": "collapsing section",
     "body": [
       "if (ui.collapsing(\"${1:More stuff}\")) {",
-      "\t$0",
+      "  $0",
       "}"
     ]
   },
   "goome tree": {
     "prefix": "goome-tree",
-    "description": "tree node, srcOpen is a Flag",
+    "description": "tree node, open while it returns true",
     "body": [
-      "ui.tree(\"${1:src}\", ${2:srcOpen}, () => {",
-      "\t$0",
+      "ui.tree(\"${1:src}\", () => {",
+      "  $0",
       "});"
     ]
   },
@@ -300,17 +301,17 @@
     "description": "scroll area",
     "body": [
       "ui.scroll(\"${1:list}\", ${2:150}, () => {",
-      "\t$0",
+      "  $0",
       "});"
     ]
   },
   "goome split": {
     "prefix": "goome-split",
-    "description": "split panes, panes is a Split",
+    "description": "split panes",
     "body": [
-      "ui.split(\"${1:main}\", ${2:panes}, () => {",
-      "\t$0",
-      "\tui.splitNext();",
+      "ui.split(\"${1:main}\", () => {",
+      "  $0",
+      "  ui.splitNext();",
       "});"
     ]
   },
@@ -319,13 +320,13 @@
     "description": "menu bar with a File menu",
     "body": [
       "ui.menubar(() => {",
-      "\tui.menu(\"${1:File}\", () => {",
-      "\t\tif (ui.menuItem(\"${2:Open}\", \"${3:Ctrl+O}\")) {",
-      "\t\t\t$0",
-      "\t\t}",
-      "\t\tui.menuSeparator();",
-      "\t\tif (ui.menuItem(\"Quit\", \"Ctrl+Q\")) running = false;",
-      "\t});",
+      "  ui.menu(\"${1:File}\", () => {",
+      "    if (ui.menuItem(\"${2:Open}\", \"${3:Ctrl+O}\")) {",
+      "      $0",
+      "    }",
+      "    ui.menuSeparator();",
+      "    if (ui.menuItem(\"Quit\", \"Ctrl+Q\")) running = false;",
+      "  });",
       "});"
     ]
   },
@@ -335,7 +336,7 @@
     "body": [
       "if (ui.button(\"${1:More}\")) ui.popupOpen(\"${2:more}\");",
       "ui.popup(\"$2\", () => {",
-      "\t$0",
+      "  $0",
       "});"
     ]
   },
@@ -344,20 +345,20 @@
     "description": "right click menu for the widget before it",
     "body": [
       "ui.context(\"${1:ctx}\", () => {",
-      "\tif (ui.menuItem(\"${2:Delete}\")) {",
-      "\t\t$0",
-      "\t}",
+      "  if (ui.menuItem(\"${2:Delete}\")) {",
+      "    $0",
+      "  }",
       "});"
     ]
   },
   "goome modal": {
     "prefix": "goome-modal",
-    "description": "modal with a Done button, settingsOpen is a Flag",
+    "description": "modal with a Done button, settingsOpen is a goome.Flag",
     "body": [
       "if (ui.button(\"${1:Open settings}\")) ${2:settingsOpen}.value = true;",
       "ui.modal(\"${3:Settings}\", $2, () => {",
-      "\t$0",
-      "\tif (ui.button(\"Done\")) ui.popupClose();",
+      "  $0",
+      "  if (ui.button(\"Done\")) ui.popupClose();",
       "});"
     ]
   },
@@ -380,19 +381,20 @@
     "description": "table with sortable columns",
     "body": [
       "ui.table(\"${1:files}\", 2, ${2:200}, goome.TABLE_SORTABLE | goome.TABLE_STRIPES, () => {",
-      "\tui.tableColumn(\"${3:Name}\");",
-      "\tui.tableColumn(\"${4:Size}\", 90);",
-      "\tconst sort = ui.tableSort(${5:sortCol}, ${6:sortDesc});",
-      "\tif (sort.changed) {",
-      "\t\t$5 = sort.col;",
-      "\t\t$6 = sort.desc;",
-      "\t}",
-      "\tfor (let i = 0; i < ${7:count}; i++) {",
-      "\t\tui.tableRow();",
-      "\t\tui.label(i);",
-      "\t\tui.tableNext();",
-      "\t\tui.label(\"$0\");",
-      "\t}",
+      "  ui.tableColumn(\"${3:Name}\");",
+      "  ui.tableColumn(\"${4:Size}\", 90);",
+      "  const sort = ui.tableSort(${5:sortCol}, ${6:sortDesc});",
+      "  if (sort.changed) {",
+      "    $5 = sort.col;",
+      "    $6 = sort.desc;",
+      "  }",
+      "  for (const row of ${7:rows}) {",
+      "    ui.tableRow();",
+      "    ui.label(row.name);",
+      "    ui.tableNext();",
+      "    ui.label(row.size);",
+      "  }",
+      "  $0",
       "});"
     ]
   },
@@ -428,7 +430,7 @@
     "prefix": "goome-spinner",
     "description": "loading spinner",
     "body": [
-      "ui.spinner(${1:0});"
+      "ui.spinner();"
     ]
   },
   "goome link": {
@@ -436,7 +438,7 @@
     "description": "clickable link",
     "body": [
       "if (ui.link(\"${1:goome docs}\")) {",
-      "\t$0",
+      "  $0",
       "}"
     ]
   },
@@ -444,15 +446,15 @@
     "prefix": "goome-badge",
     "description": "little colored badge",
     "body": [
-      "ui.badge(\"${1:new}\", ${2:0xFF6FDC5F});"
+      "ui.badge(\"${1:new}\", ${2:0xff6fdc5f});"
     ]
   },
   "goome style": {
     "prefix": "goome-style",
-    "description": "push colors and sizes for the code inside",
+    "description": "push a color and a size, popped when the callback ends",
     "body": [
-      "ui.style({ ${1:accent}: ${2:0xFFFF5050}, ${3:radius}: ${4:4} }, () => {",
-      "\t$0",
+      "ui.style({ ${1:accent}: ${2:0xffff5050}, ${3:radius}: ${4:4} }, () => {",
+      "  $0",
       "});"
     ]
   },
@@ -460,7 +462,7 @@
     "prefix": "goome-style-push",
     "description": "push and pop by hand",
     "body": [
-      "ui.pushColor(goome.S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, ${2:0xFFFF5050});",
+      "ui.pushColor(goome.S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, ${2:0xffff5050});",
       "ui.pushNum(goome.S_${3|RADIUS,PAD,GAP,BORDER_WIDTH,FONT_SIZE|}, ${4:4});",
       "$0",
       "ui.pop(2);"
@@ -472,7 +474,7 @@
     "body": [
       "const ${1:gain} = ui.store(\"$1\", 1);",
       "const it = ui.custom(\"$1\", ${2:80}, ${3:80}, goome.ITEM_DRAG_Y | goome.ITEM_FOCUSABLE);",
-      "if (it.held) $1[0] = Math.max(0, Math.min(1, $1[0] - it.dy / 200));",
+      "if (it.held) $1[0] = Math.min(1, Math.max(0, $1[0] - it.dy / 200));",
       "const c = ui.canvas;",
       "if (c) c.arc(it.x + 40, it.y + 40, 30, 6, 2.36, 2.36 + 4.71 * $1[0], ui.theme.accent);"
     ]
@@ -481,18 +483,16 @@
     "prefix": "goome-offscreen",
     "description": "offscreen frame: no window, push a click, save what it drew",
     "body": [
-      "const g = goome.openOffscreen(${1:640}, ${2:480}, 1);",
+      "const g = goome.openOffscreen(${1:640}, ${2:480});",
       "const ui = g.ui();",
-      "g.pushClick(${3:60}, ${4:60}, 1);",
+      "g.pushClick(${3:60}, ${4:60});",
       "for (const ev of g.events(0)) ui.feed(ev);",
-      "if (ui.begin(0)) {",
-      "\tui.app(\"${5:offscreen}\");",
-      "\t$0",
-      "\tui.appEnd();",
-      "\tui.end();",
-      "}",
+      "ui.frame(0, () => {",
+      "  ui.app(\"${5:offscreen}\", 0, () => {",
+      "    $0",
+      "  });",
+      "});",
       "g.lastFrame().savePpm(\"${6:frame.ppm}\");",
-      "ui.close();",
       "g.close();"
     ]
   },
@@ -501,9 +501,9 @@
     "description": "global hotkey and where it fires",
     "body": [
       "try {",
-      "\tg.hotkey(\"${1:alt+m}\", ${2:1});",
+      "  g.hotkey(\"${1:alt+m}\", ${2:1});",
       "} catch (e) {",
-      "\tconsole.error(`couldnt grab $1: \\${e.message}`);",
+      "  console.error(\"no global hotkeys here\");",
       "}",
       "$0",
       "if (ev.type === goome.HOTKEY && ev.id === $2) {",
@@ -521,7 +521,7 @@
     "prefix": "goome-theme-make",
     "description": "make a theme from one accent color",
     "body": [
-      "ui.theme.make(${1:0xFF4FA3FF}, ${2:true}, ${3:10});"
+      "ui.theme.make(${1:0xff4fa3ff}, ${2:true}, ${3:10});"
     ]
   },
   "goome ease": {
@@ -542,7 +542,7 @@
     "prefix": "goome-anim-color",
     "description": "animate a color toward a target, call it every frame",
     "body": [
-      "const ${1:bg} = ${2:ui}.animColor(\"${3:bg}\", ${4:hot ? 0xFF3A7BD5 : 0xFF202020}, ${5:150}, goome.EASE_${6|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|});"
+      "const ${1:bg} = ${2:ui}.animColor(\"${3:bg}\", ${4:hot ? 0xff3a7bd5 : 0xff202020}, ${5:150}, goome.EASE_${6|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|});"
     ]
   },
   "goome text input": {
@@ -552,10 +552,10 @@
       "${1:g}.textInput(${2:focused}, { x: ${3:x}, y: ${4:y}, w: 2, h: ${5:20} });",
       "$0",
       "if (ev.type === goome.TEXT) {",
-      "\tconst ${6:typed} = $1.eventText;",
+      "  const ${6:typed} = $1.eventText;",
       "} else if (ev.type === goome.PREEDIT) {",
-      "\tconst ${7:composing} = $1.eventText;",
-      "\tconst ${8:at} = $1.preeditCursor;",
+      "  const ${7:composing} = $1.eventText;",
+      "  const ${8:at} = $1.preeditCursor;",
       "}"
     ]
   },

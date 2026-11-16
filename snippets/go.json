@@ -21,7 +21,7 @@
       "\tdefer g.Close()",
       "\tui, err := g.NewUI()",
       "\tif err != nil {",
-      "\t\tfmt.Fprintln(os.Stderr, err)",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt make a ui:\", err)",
       "\t\tos.Exit(1)",
       "\t}",
       "\tdefer ui.Free()",
@@ -72,7 +72,7 @@
       "\tdefer g.Close()",
       "\tui, err := g.NewUI()",
       "\tif err != nil {",
-      "\t\tfmt.Fprintln(os.Stderr, err)",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt make a ui:\", err)",
       "\t\tos.Exit(1)",
       "\t}",
       "\tdefer ui.Free()",
@@ -157,7 +157,8 @@
       "\tc.RoundRect(${2:40}, ${3:40}, ${4:200}, ${5:80}, 10, 0xEC1B1D22)",
       "\tc.Text($2+12, $3+12, \"${6:hello}\", true, 0xFFE9EBEE)",
       "\t$0",
-      "\t$1.End(c, goome.Rect{X: $2, Y: $3, W: $4, H: $5})",
+      "\tc.Hit($2, $3, $4, $5)",
+      "\t$1.End(c)",
       "}"
     ]
   },
@@ -223,7 +224,7 @@
   },
   "goome slider int": {
     "prefix": "goome-slider-int",
-    "description": "int slider",
+    "description": "slider on an int",
     "body": [
       "ui.SliderInt(\"${1:Count}\", &${2:count}, ${3:0}, ${4:100})"
     ]
@@ -237,9 +238,9 @@
   },
   "goome password": {
     "prefix": "goome-password",
-    "description": "password input on a string",
+    "description": "password input with a hint",
     "body": [
-      "ui.Password(\"${1:Password}\", &${2:password}, \"\")"
+      "ui.Password(\"${1:Password}\", &${2:password}, \"${3:hint}\")"
     ]
   },
   "goome combo": {
@@ -526,11 +527,13 @@
     "body": [
       "${1:gain} := ui.Store(\"$1\", 1)",
       "it, _ := ui.Custom(\"$1\", ${2:80}, ${3:80}, goome.ItemDragY|goome.ItemFocusable)",
-      "if it.Held {",
-      "\t$1[0] = min(1, max(0, $1[0]-it.DY/200))",
-      "}",
-      "if c := ui.Canvas(); c != nil {",
-      "\tc.Arc(it.X+40, it.Y+40, 30, 6, 2.36, 2.36+4.71*$1[0], ui.Theme().Accent)",
+      "if $1 != nil {",
+      "\tif it.Held {",
+      "\t\t$1[0] = min(1, max(0, $1[0]-it.DY/200))",
+      "\t}",
+      "\tif c := ui.Canvas(); c != nil {",
+      "\t\tc.Arc(it.X+40, it.Y+40, 30, 6, 2.36, 2.36+4.71*$1[0], ui.Theme().Accent)",
+      "\t}",
       "}"
     ]
   },
@@ -556,7 +559,7 @@
       "\tdefer g.Close()",
       "\tui, err := g.NewUI()",
       "\tif err != nil {",
-      "\t\tfmt.Fprintln(os.Stderr, err)",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt make a ui:\", err)",
       "\t\tos.Exit(1)",
       "\t}",
       "\tdefer ui.Free()",
@@ -575,7 +578,7 @@
       "\t\terr = frame.SavePPM(\"${6:frame.ppm}\")",
       "\t}",
       "\tif err != nil {",
-      "\t\tfmt.Fprintln(os.Stderr, err)",
+      "\t\tfmt.Fprintln(os.Stderr, \"couldnt save the frame:\", err)",
       "\t\tos.Exit(1)",
       "\t}",
       "}"
@@ -661,7 +664,7 @@
       "}",
       "extra, err := goome.LoadFont(\"${3:NotoSansCJK.ttc}\")",
       "if err != nil {",
-      "\tfmt.Fprintln(os.Stderr, \"couldnt load the font:\", err)",
+      "\tfmt.Fprintln(os.Stderr, \"couldnt load the fallback font:\", err)",
       "\tos.Exit(1)",
       "}",
       "$1.Fallback(extra)"

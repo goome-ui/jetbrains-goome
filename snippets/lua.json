@@ -7,24 +7,24 @@
       "",
       "local g, err = goome.open(\"${1:my overlay}\")",
       "if not g then",
-      "\tio.stderr:write(\"couldnt open an overlay: \" .. tostring(err) .. \"\\n\")",
-      "\tos.exit(1)",
+      "  io.stderr:write(\"couldnt open an overlay: \" .. tostring(err) .. \"\\n\")",
+      "  os.exit(1)",
       "end",
       "local ui = g:ui()",
-      "local win = {x = 60, y = 60, w = 280, open = true}",
+      "local win = {x = 60, y = 60, w = 280, h = 0, open = true}",
       "while win.open do",
-      "\tfor ev in g:events(16) do",
-      "\t\tif ev.type == goome.QUIT then win.open = false end",
-      "\t\tui:feed(ev)",
-      "\tend",
-      "\tif win.open and ui:begin(0) then",
-      "\t\tif ui:window(\"$1\", win, goome.WIN_MOVE + goome.WIN_CLOSE) then",
-      "\t\t\tui:label(\"${2:im on top of everything}\")",
-      "\t\t\t$0",
-      "\t\tend",
-      "\t\tui:window_end()",
-      "\t\tui:finish()",
-      "\tend",
+      "  for ev in g:events(16) do",
+      "    if ev.type == goome.QUIT then win.open = false end",
+      "    ui:feed(ev)",
+      "  end",
+      "  if win.open and ui:begin(0) then",
+      "    if ui:window(\"$1\", win, goome.WIN_MOVE + goome.WIN_CLOSE) then",
+      "      ui:label(\"${2:im on top of everything}\")",
+      "      $0",
+      "    end",
+      "    ui:window_end()",
+      "    ui:finish()",
+      "  end",
       "end",
       "g:close()"
     ]
@@ -37,23 +37,23 @@
       "",
       "local g, err = goome.open_app(\"${1:My App}\", ${2:960}, ${3:640})",
       "if not g then",
-      "\tio.stderr:write(\"couldnt open a window: \" .. tostring(err) .. \"\\n\")",
-      "\tos.exit(1)",
+      "  io.stderr:write(\"couldnt open a window: \" .. tostring(err) .. \"\\n\")",
+      "  os.exit(1)",
       "end",
       "local ui = g:ui()",
       "local running = true",
       "while running do",
-      "\tfor ev in g:events(16) do",
-      "\t\tif ev.type == goome.QUIT or ev.type == goome.CLOSE then running = false end",
-      "\t\tui:feed(ev)",
-      "\tend",
-      "\tif running and ui:begin(0) then",
-      "\t\tui:app(\"$1\")",
-      "\t\tui:heading(\"${4:Hello}\")",
-      "\t\t$0",
-      "\t\tui:app_end()",
-      "\t\tui:finish()",
-      "\tend",
+      "  for ev in g:events(16) do",
+      "    if ev.type == goome.QUIT or ev.type == goome.CLOSE then running = false end",
+      "    ui:feed(ev)",
+      "  end",
+      "  if running and ui:begin(0) then",
+      "    ui:app(\"$1\")",
+      "    ui:heading(\"${4:Hello}\")",
+      "    $0",
+      "    ui:app_end()",
+      "    ui:finish()",
+      "  end",
       "end",
       "g:close()"
     ]
@@ -65,20 +65,20 @@
       "local pace = goome.pacer(${1:60})",
       "local running, dirty = true, true",
       "while running do",
-      "\tlocal busy = dirty or ${2:ui}:animating()",
-      "\tfor ev in ${3:g}:events(busy and pace:wait() or 500) do",
-      "\t\tif ev.type == goome.QUIT or ev.type == goome.CLOSE then running = false end",
-      "\t\t$2:feed(ev)",
-      "\t\tdirty = true",
-      "\tend",
-      "\tif not running then break end",
-      "\tif dirty or $2:animating() then",
-      "\t\tdirty = false",
-      "\t\tif $2:begin(0) then",
-      "\t\t\t$0",
-      "\t\t\t$2:finish()",
-      "\t\tend",
-      "\tend",
+      "  local busy = dirty or ${2:ui}:animating()",
+      "  for ev in ${3:g}:events(busy and pace:wait() or 500) do",
+      "    if ev.type == goome.QUIT or ev.type == goome.CLOSE then running = false end",
+      "    $2:feed(ev)",
+      "    dirty = true",
+      "  end",
+      "  if not running then break end",
+      "  if dirty or $2:animating() then",
+      "    dirty = false",
+      "    if $2:begin(0) then",
+      "      $0",
+      "      $2:finish()",
+      "    end",
+      "  end",
       "end"
     ]
   },
@@ -87,10 +87,10 @@
     "description": "ui window with a label and a button",
     "body": [
       "if ui:window(\"${1:Window}\", ${2:win}, goome.WIN_MOVE + goome.WIN_RESIZE + goome.WIN_COLLAPSE) then",
-      "\tui:label(\"${3:hello}\")",
-      "\tif ui:button(\"${4:Click me}\") then",
-      "\t\t$0",
-      "\tend",
+      "  ui:label(\"${3:hello}\")",
+      "  if ui:button(\"${4:Click me}\") then",
+      "    $0",
+      "  end",
       "end",
       "ui:window_end()"
     ]
@@ -101,11 +101,11 @@
     "body": [
       "local c = ${1:g}:begin(0)",
       "if c then",
-      "\tc:clear()",
-      "\tc:round_rect(${2:40}, ${3:40}, ${4:200}, ${5:80}, 10, 0xEC1B1D22)",
-      "\tc:text($2 + 12, $3 + 12, \"${6:hello}\", 0xFFE9EBEE, true)",
-      "\t$0",
-      "\t$1:finish(c, {{$2, $3, $4, $5}})",
+      "  c:clear()",
+      "  c:round_rect(${2:40}, ${3:40}, ${4:200}, ${5:80}, 10, 0xEC1B1D22)",
+      "  c:text($2 + 12, $3 + 12, \"${6:hello}\", 0xFFE9EBEE, true)",
+      "  $0",
+      "  $1:finish(c, {{$2, $3, $4, $5}})",
       "end"
     ]
   },
@@ -135,7 +135,7 @@
     "description": "button",
     "body": [
       "if ui:button(\"${1:Click me}\") then",
-      "\t$0",
+      "  $0",
       "end"
     ]
   },
@@ -166,7 +166,7 @@
     "prefix": "goome-slider",
     "description": "slider, returns the new value",
     "body": [
-      "${2:volume} = ui:slider(\"${1:Volume}\", $2, ${3:0.0}, ${4:1.0}, \"${5:%.2f}\")"
+      "${2:volume} = ui:slider(\"${1:Volume}\", $2, ${3:0}, ${4:1}, \"${5:%.2f}\")"
     ]
   },
   "goome slider int": {
@@ -192,7 +192,7 @@
   },
   "goome combo": {
     "prefix": "goome-combo",
-    "description": "dropdown, the first item is 1",
+    "description": "dropdown, items count from 1",
     "body": [
       "${2:fruit} = ui:combo(\"${1:Fruit}\", $2, {\"${3:Mango}\", \"${4:Banana}\", \"${5:Cherry}\"})"
     ]
@@ -201,16 +201,18 @@
     "prefix": "goome-selectable",
     "description": "selectable list row",
     "body": [
-      "if ui:selectable(\"${1:Item}\", ${2:picked} == ${3:0}) then $2 = $3 end"
+      "if ui:selectable(\"${1:Item}\", ${2:picked} == ${3:1}) then",
+      "  $2 = $3",
+      "end"
     ]
   },
   "goome tabs": {
     "prefix": "goome-tabs",
-    "description": "tabs, the first tab is 1",
+    "description": "tabs, they count from 1",
     "body": [
       "${2:tab} = ui:tabs(\"${1:tabs}\", {\"${3:General}\", \"${4:Advanced}\"}, $2)",
       "if $2 == 1 then",
-      "\t$0",
+      "  $0",
       "end"
     ]
   },
@@ -219,7 +221,7 @@
     "description": "collapsing section",
     "body": [
       "if ui:collapsing(\"${1:More stuff}\") then",
-      "\t$0",
+      "  $0",
       "end"
     ]
   },
@@ -230,8 +232,8 @@
       "local shown",
       "shown, ${2:src_open} = ui:tree(\"${1:src}\", $2)",
       "if shown then",
-      "\t$0",
-      "\tui:tree_end()",
+      "  $0",
+      "  ui:tree_end()",
       "end"
     ]
   },
@@ -289,7 +291,7 @@
     "description": "scroll area",
     "body": [
       "if ui:scroll(\"${1:list}\", ${2:150}) then",
-      "\t$0",
+      "  $0",
       "end",
       "ui:scroll_end()"
     ]
@@ -301,8 +303,8 @@
       "local shown",
       "shown, ${2:frac} = ui:split(\"${1:main}\", $2)",
       "if shown then",
-      "\t$0",
-      "\tui:split_next()",
+      "  $0",
+      "  ui:split_next()",
       "end",
       "ui:split_end()"
     ]
@@ -312,15 +314,15 @@
     "description": "menu bar with a File menu",
     "body": [
       "if ui:menubar() then",
-      "\tif ui:menu(\"${1:File}\") then",
-      "\t\tif ui:menu_item(\"${2:Open}\", \"${3:Ctrl+O}\") then",
-      "\t\t\t$0",
-      "\t\tend",
-      "\t\tui:menu_separator()",
-      "\t\tif ui:menu_item(\"Quit\", \"Ctrl+Q\") then running = false end",
-      "\t\tui:menu_end()",
-      "\tend",
-      "\tui:menubar_end()",
+      "  if ui:menu(\"${1:File}\") then",
+      "    if ui:menu_item(\"${2:Open}\", \"${3:Ctrl+O}\") then",
+      "      $0",
+      "    end",
+      "    ui:menu_separator()",
+      "    if ui:menu_item(\"Quit\", \"Ctrl+Q\") then running = false end",
+      "    ui:menu_end()",
+      "  end",
+      "  ui:menubar_end()",
       "end"
     ]
   },
@@ -330,8 +332,8 @@
     "body": [
       "if ui:button(\"${1:More}\") then ui:popup_open(\"${2:more}\") end",
       "if ui:popup(\"$2\") then",
-      "\t$0",
-      "\tui:popup_end()",
+      "  $0",
+      "  ui:popup_end()",
       "end"
     ]
   },
@@ -340,10 +342,10 @@
     "description": "right click menu for the widget before it",
     "body": [
       "if ui:context(\"${1:ctx}\") then",
-      "\tif ui:menu_item(\"${2:Delete}\") then",
-      "\t\t$0",
-      "\tend",
-      "\tui:context_end()",
+      "  if ui:menu_item(\"${2:Delete}\") then",
+      "    $0",
+      "  end",
+      "  ui:context_end()",
       "end"
     ]
   },
@@ -355,9 +357,9 @@
       "local shown",
       "shown, $2 = ui:modal(\"${3:Settings}\", $2)",
       "if shown then",
-      "\t$0",
-      "\tif ui:button(\"Done\") then $2 = false end",
-      "\tui:modal_end()",
+      "  $0",
+      "  if ui:button(\"Done\") then ui:popup_close() end",
+      "  ui:modal_end()",
       "end"
     ]
   },
@@ -380,15 +382,19 @@
     "description": "table with sortable columns",
     "body": [
       "if ui:table(\"${1:files}\", 2, ${2:200}, goome.TABLE_SORTABLE + goome.TABLE_STRIPES) then",
-      "\tui:table_column(\"${3:Name}\")",
-      "\tui:table_column(\"${4:Size}\", 90)",
-      "\tlocal changed, col, desc = ui:table_sort()",
-      "\tfor i = 1, ${5:count} do",
-      "\t\tui:table_row()",
-      "\t\tui:label(tostring(i))",
-      "\t\tui:table_next()",
-      "\t\tui:label(\"$0\")",
-      "\tend",
+      "  ui:table_column(\"${3:Name}\")",
+      "  ui:table_column(\"${4:Size}\", 90)",
+      "  local changed",
+      "  changed, ${5:sort_col}, ${6:sort_desc} = ui:table_sort($5, $6)",
+      "  if changed then",
+      "    $0",
+      "  end",
+      "  for i = 1, ${7:count} do",
+      "    ui:table_row()",
+      "    ui:label(tostring(i))",
+      "    ui:table_next()",
+      "    ui:label(\"${8:value}\")",
+      "  end",
       "end",
       "ui:table_end()"
     ]
@@ -425,7 +431,7 @@
     "prefix": "goome-spinner",
     "description": "loading spinner",
     "body": [
-      "ui:spinner(${1:12})"
+      "ui:spinner(${1:16})"
     ]
   },
   "goome link": {
@@ -433,7 +439,7 @@
     "description": "clickable link",
     "body": [
       "if ui:link(\"${1:goome docs}\") then",
-      "\t$0",
+      "  $0",
       "end"
     ]
   },
@@ -448,15 +454,15 @@
     "prefix": "goome-style",
     "description": "push a color and a size, pop them after",
     "body": [
-      "ui:push_color(\"${1:accent}\", ${2:0xFFFF5050})",
-      "ui:push_num(\"${3:radius}\", ${4:4})",
+      "ui:push_color(\"${1|accent,bg,panel,border,text,text_dim,hover,active,input_bg|}\", ${2:0xFFFF5050})",
+      "ui:push_num(\"${3|radius,pad,gap,border_width,font_size|}\", ${4:4})",
       "$0",
       "ui:pop(2)"
     ]
   },
   "goome style push": {
     "prefix": "goome-style-push",
-    "description": "push and pop by hand",
+    "description": "push and pop by hand with the S_ constants",
     "body": [
       "ui:push_color(goome.S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, ${2:0xFFFF5050})",
       "ui:push_num(goome.S_${3|RADIUS,PAD,GAP,BORDER_WIDTH,FONT_SIZE|}, ${4:4})",
@@ -470,28 +476,30 @@
     "body": [
       "local ${1:gain} = ui:store(\"$1\", 1)",
       "local _, it = ui:custom(\"$1\", ${2:80}, ${3:80}, goome.ITEM_DRAG_Y + goome.ITEM_FOCUSABLE)",
-      "if it.held then $1[1] = math.max(0, math.min(1, $1[1] - it.dy / 200)) end",
+      "if $1 and it.held then",
+      "  $1[1] = math.min(1, math.max(0, $1[1] - it.dy / 200))",
+      "end",
       "local c = ui:canvas()",
-      "if c then c:arc(it.x + 40, it.y + 40, 30, 6, 2.36, 2.36 + 4.71 * $1[1], ui:theme().accent) end"
+      "if c and $1 then",
+      "  c:arc(it.x + 40, it.y + 40, 30, 6, 2.36, 2.36 + 4.71 * $1[1], ui:theme().accent)",
+      "end"
     ]
   },
   "goome offscreen": {
     "prefix": "goome-offscreen",
     "description": "offscreen frame: no window, push a click, save what it drew",
     "body": [
-      "local g, err = goome.open_offscreen(${1:640}, ${2:480})",
-      "if not g then",
-      "\tio.stderr:write(\"couldnt open an offscreen frame: \" .. tostring(err) .. \"\\n\")",
-      "\tos.exit(1)",
+      "  io.stderr:write(\"couldnt open an offscreen frame: \" .. tostring(err) .. \"\\n\")",
+      "  os.exit(1)",
       "end",
       "local ui = g:ui()",
       "g:push_click(${3:60}, ${4:60})",
       "for ev in g:events(0) do ui:feed(ev) end",
       "if ui:begin(0) then",
-      "\tui:app(\"${5:offscreen}\")",
-      "\t$0",
-      "\tui:app_end()",
-      "\tui:finish()",
+      "  ui:app(\"${5:offscreen}\")",
+      "  $0",
+      "  ui:app_end()",
+      "  ui:finish()",
       "end",
       "g:last_frame():save_ppm(\"${6:frame.ppm}\")",
       "ui:close()",
@@ -551,9 +559,9 @@
       "${1:g}:text_input(${2:focused}, {${3:x}, ${4:y}, 2, ${5:20}})",
       "$0",
       "if ev.type == goome.TEXT then",
-      "\tlocal ${6:typed} = $1:event_text()",
+      "  local ${6:typed} = $1:event_text()",
       "elseif ev.type == goome.PREEDIT then",
-      "\tlocal ${7:composing}, ${8:at} = $1:event_text(), $1:preedit_cursor()",
+      "  local ${7:composing}, ${8:at} = $1:event_text(), $1:preedit_cursor()",
       "end"
     ]
   },
@@ -569,7 +577,8 @@
     "prefix": "goome-font-fallback",
     "description": "font that falls back to another one for chars it doesnt have",
     "body": [
-      "local ${1:font} = assert(goome.font_load(\"${2:Inter.ttf}\")):fallback(assert(goome.font_load(\"${3:NotoSansCJK.ttc}\")))"
+      "local ${1:font} = assert(goome.font_load(\"${2:Inter.ttf}\"))",
+      "$1:fallback(assert(goome.font_load(\"${3:NotoSansCJK.ttc}\")))"
     ]
   },
   "goome text dir": {

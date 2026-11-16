@@ -187,7 +187,7 @@ class SnippetTest {
         for (lang in listOf("csharp", "python", "rust", "node", "go", "zig", "lua", "godot")) {
             val got = snippets(lang).map { it.prefix }
             assertEquals(lang, got.size, got.toSet().size)
-            assertTrue("$lang has prefixes java doesnt: " + (got.toSet() - shared), shared.containsAll(got))
+            assertTrue("$lang has prefixes java doesnt: " + (got.toSet() - shared), (shared + "goome-view").containsAll(got))
             assertTrue("$lang only has ${got.size}", got.size >= 55)
             for (must in listOf("goome-overlay", "goome-app", "goome-loop", "goome-button", "goome-slider", "goome-theme-preset")) assertTrue("$lang is missing $must", must in got)
         }
@@ -219,8 +219,7 @@ class SnippetTest {
     fun sameAsVscodeGoome() {
         val vs = sibling("vscode-goome")
         assumeTrue("vscode-goome isnt next to this repo", vs != null)
-        val shared = setOf("c.json", "csharp.json", "python.json", "java.json")
-        for (f in File(root, "snippets").listFiles()!!.filter { it.name in shared } + File(root, "schemas").listFiles()!!) {
+        for (f in File(root, "snippets").listFiles()!! + File(root, "schemas").listFiles()!!) {
             val other = File(vs, f.parentFile.name + "/" + f.name)
             assertEquals(f.name + " drifted from vscode-goome", other.readText(), f.readText())
         }

@@ -13,22 +13,31 @@
       "\tui.window_end()"
     ]
   },
-  "goome app": {
-    "prefix": "goome-app",
-    "description": "an app window that the ui fills, a GoomeView script",
+  "goome view": {
+    "prefix": "goome-view",
+    "description": "a view script with a ui window",
     "body": [
       "extends GoomeView",
       "",
       "",
-      "func _ready() -> void:",
-      "\tget_window().title = \"${1:My App}\"",
-      "\tget_window().size = Vector2i(${2:960}, ${3:640})",
+      "func _goome_frame(ui: GoomeUI) -> void:",
+      "\tif ui.window(\"${1:Window}\", Rect2(40, 40, 300, 0), GoomeUI.WIN_MOVE | GoomeUI.WIN_RESIZE | GoomeUI.WIN_COLLAPSE):",
+      "\t\tui.label(\"${2:hello}\")",
+      "\t\t$0",
+      "\tui.window_end()"
+    ]
+  },
+  "goome app": {
+    "prefix": "goome-app",
+    "description": "a view script where the ui fills the whole view",
+    "body": [
+      "extends GoomeView",
       "",
       "",
       "func _goome_frame(ui: GoomeUI) -> void:",
-      "\tif ui.app_begin(\"$1\", 0):",
-      "\t\tui.heading(\"${4:Hello}\")",
-      "\t\t$0",
+      "\tui.app_begin(\"${1:My App}\", 0)",
+      "\tui.heading(\"${2:Hello}\")",
+      "\t$0",
       "\tui.app_end()"
     ]
   },
@@ -86,7 +95,7 @@
     "prefix": "goome-wrapped",
     "description": "text that wraps at the edge",
     "body": [
-      "ui.wrapped(\"${1:this text wraps when it runs into the edge}\")"
+      "ui.wrapped(\"${1:a longer bit of text that wraps}\")"
     ]
   },
   "goome button": {
@@ -101,58 +110,58 @@
     "prefix": "goome-checkbox",
     "description": "checkbox, returns the new value",
     "body": [
-      "${2:show_grid} = ui.checkbox(\"${1:Show grid}\", $2)"
+      "${1:enabled} = ui.checkbox(\"${2:Enabled}\", $1)"
     ]
   },
   "goome toggle": {
     "prefix": "goome-toggle",
     "description": "toggle switch, returns the new value",
     "body": [
-      "${2:wifi} = ui.toggle(\"${1:Wi-Fi}\", $2)"
+      "${1:enabled} = ui.toggle(\"${2:Enabled}\", $1)"
     ]
   },
   "goome radio": {
     "prefix": "goome-radio",
     "description": "radio buttons on one int",
     "body": [
-      "${2:size} = ui.radio(\"${1:Small}\", $2, 0)",
+      "${1:size} = ui.radio(\"${2:Small}\", $1, 0)",
       "ui.same_line()",
-      "$2 = ui.radio(\"${3:Large}\", $2, 1)"
+      "$1 = ui.radio(\"${3:Large}\", $1, 1)"
     ]
   },
   "goome slider": {
     "prefix": "goome-slider",
     "description": "slider, returns the new value",
     "body": [
-      "${2:volume} = ui.slider(\"${1:Volume}\", $2, ${3:0.0}, ${4:1.0}, \"${5:%.2f}\")"
+      "${1:volume} = ui.slider(\"${2:Volume}\", $1, ${3:0.0}, ${4:1.0}, \"${5:%.2f}\")"
     ]
   },
   "goome slider int": {
     "prefix": "goome-slider-int",
     "description": "int slider, returns the new value",
     "body": [
-      "${2:count} = ui.slider_int(\"${1:Count}\", $2, ${3:0}, ${4:100})"
+      "${1:count} = ui.slider_int(\"${2:Count}\", $1, ${3:0}, ${4:100})"
     ]
   },
   "goome input": {
     "prefix": "goome-input",
     "description": "one line text input",
     "body": [
-      "${2:player} = ui.input(\"${1:Name}\", $2, ${3:64})"
+      "${1:name} = ui.input(\"${2:Name}\", $1, ${3:64})"
     ]
   },
   "goome password": {
     "prefix": "goome-password",
     "description": "password input",
     "body": [
-      "${2:password} = ui.password(\"${1:Password}\", $2, ${3:64})"
+      "${1:secret} = ui.password(\"${2:Password}\", $1)"
     ]
   },
   "goome combo": {
     "prefix": "goome-combo",
     "description": "dropdown",
     "body": [
-      "${2:fruit} = ui.combo(\"${1:Fruit}\", $2, PackedStringArray([\"${3:Mango}\", \"${4:Banana}\", \"${5:Cherry}\"]))"
+      "${1:fruit} = ui.combo(\"${2:Fruit}\", $1, PackedStringArray([\"${3:Mango}\", \"${4:Banana}\", \"${5:Cherry}\"]))"
     ]
   },
   "goome selectable": {
@@ -167,8 +176,8 @@
     "prefix": "goome-tabs",
     "description": "tabs",
     "body": [
-      "${2:tab} = ui.tabs(\"${1:tabs}\", PackedStringArray([\"${3:General}\", \"${4:Advanced}\"]), $2)",
-      "if $2 == 0:",
+      "${1:tab} = ui.tabs(\"${2:tabs}\", PackedStringArray([\"${3:General}\", \"${4:Advanced}\"]), $1)",
+      "if $1 == 0:",
       "\t$0"
     ]
   },
@@ -200,7 +209,7 @@
     "prefix": "goome-color",
     "description": "color picker, returns the new color",
     "body": [
-      "${2:highlight} = ui.color(\"${1:Highlight}\", $2)"
+      "${1:highlight} = ui.color(\"${2:Highlight}\", $1)"
     ]
   },
   "goome tooltip": {
@@ -235,21 +244,21 @@
     "prefix": "goome-space",
     "description": "empty space",
     "body": [
-      "ui.space(${1:12})"
+      "ui.space(${1:12.0})"
     ]
   },
   "goome scroll": {
     "prefix": "goome-scroll",
     "description": "scroll area",
     "body": [
-      "if ui.scroll_begin(\"${1:list}\", ${2:150}):",
+      "if ui.scroll_begin(\"${1:list}\", ${2:150.0}):",
       "\t$0",
       "ui.scroll_end()"
     ]
   },
   "goome split": {
     "prefix": "goome-split",
-    "description": "split panes, panes is a Split",
+    "description": "split panes",
     "body": [
       "if ui.split_begin(\"${1:main}\", false, ${2:0.3}):",
       "\t$0",
@@ -310,27 +319,27 @@
     "prefix": "goome-toast",
     "description": "toast message",
     "body": [
-      "ui.toast(\"${1:Saved}\", ${2:2500})"
+      "ui.toast(\"${1:saved}\", ${2:2500})"
     ]
   },
   "goome text edit": {
     "prefix": "goome-text-edit",
-    "description": "multiline text editor on a TextBuffer",
+    "description": "multiline text editor",
     "body": [
-      "${2:notes} = ui.text_edit(\"${1:notes}\", $2, ${3:140}, GoomeUI.EDIT_WRAP)"
+      "${1:notes} = ui.text_edit(\"$1\", $1, ${2:140.0}, GoomeUI.EDIT_WRAP)"
     ]
   },
   "goome table": {
     "prefix": "goome-table",
     "description": "table with sortable columns",
     "body": [
-      "if ui.table_begin(\"${1:files}\", 2, ${2:200}, GoomeUI.TABLE_SORTABLE | GoomeUI.TABLE_STRIPES):",
+      "if ui.table_begin(\"${1:files}\", 2, ${2:200.0}, GoomeUI.TABLE_SORTABLE | GoomeUI.TABLE_STRIPES):",
       "\tui.table_column(\"${3:Name}\")",
-      "\tui.table_column(\"${4:Size}\", 90)",
+      "\tui.table_column(\"${4:Size}\", 90.0)",
       "\t${5:sort} = ui.table_sort($5)",
-      "\tfor i in ${6:count}:",
+      "\tfor row in ${6:rows}:",
       "\t\tui.table_row()",
-      "\t\tui.label(str(i))",
+      "\t\tui.label(str(row))",
       "\t\tui.table_next()",
       "\t\tui.label(\"$0\")",
       "ui.table_end()"
@@ -340,35 +349,35 @@
     "prefix": "goome-drag-float",
     "description": "drag a number left and right",
     "body": [
-      "${2:speed} = ui.drag_float(\"${1:Speed}\", $2, ${3:0.01}, ${4:0}, ${5:10}, \"${6:%.2f}\")"
+      "${1:speed} = ui.drag_float(\"${2:Speed}\", $1, ${3:0.01}, ${4:0.0}, ${5:10.0}, \"${6:%.2f}\")"
     ]
   },
   "goome number": {
     "prefix": "goome-number",
     "description": "number box with - and + buttons",
     "body": [
-      "${2:amount} = ui.number(\"${1:Amount}\", $2, ${3:1}, \"${4:%.0f}\")"
+      "${1:amount} = ui.number(\"${2:Amount}\", $1, ${3:1.0}, \"${4:%.0f}\")"
     ]
   },
   "goome plot": {
     "prefix": "goome-plot",
-    "description": "line plot from a float array",
+    "description": "line plot from a PackedFloat32Array",
     "body": [
-      "ui.plot_lines(\"${1:CPU}\", ${2:values}, ${3:0}, ${4:100}, ${5:90})"
+      "ui.plot_lines(\"${1:fps}\", ${2:history}, ${3:0.0}, ${4:100.0}, ${5:90.0})"
     ]
   },
   "goome plot bars": {
     "prefix": "goome-plot-bars",
-    "description": "bar plot from a float array",
+    "description": "bar plot from a PackedFloat32Array",
     "body": [
-      "ui.plot_bars(\"${1:Requests}\", ${2:values}, ${3:0}, ${4:20}, ${5:90})"
+      "ui.plot_bars(\"${1:requests}\", ${2:history}, ${3:0.0}, ${4:20.0}, ${5:90.0})"
     ]
   },
   "goome spinner": {
     "prefix": "goome-spinner",
     "description": "loading spinner",
     "body": [
-      "ui.spinner(${1:0})"
+      "ui.spinner()"
     ]
   },
   "goome link": {
@@ -383,14 +392,14 @@
     "prefix": "goome-badge",
     "description": "little colored badge",
     "body": [
-      "ui.badge(\"${1:new}\", ${2:Color(\"6fdc5f\")})"
+      "ui.badge(\"${1:new}\", Color(\"${2:6fdc5f}\"))"
     ]
   },
   "goome style": {
     "prefix": "goome-style",
     "description": "push a color and a size, pop them after",
     "body": [
-      "var ${1:n} := ui.push_style({\"${2:accent}\": ${3:Color(\"ff5050\")}, \"${4:radius}\": ${5:4.0}})",
+      "var ${1:pushed} := ui.push_style({\"${2|accent,bg,panel,border,text,text_dim,hover,active,input_bg|}\": Color(\"${3:ff5050}\"), \"${4|radius,pad,gap,border_width,font_size|}\": ${5:4}})",
       "$0",
       "ui.pop($1)"
     ]
@@ -399,8 +408,8 @@
     "prefix": "goome-style-push",
     "description": "push and pop by hand",
     "body": [
-      "ui.push_color(GoomeUI.S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, ${2:Color(\"ff5050\")})",
-      "ui.push_num(GoomeUI.S_${3|RADIUS,PAD,GAP,BORDER_WIDTH,FONT_SIZE|}, ${4:4.0})",
+      "ui.push_color(GoomeUI.S_${1|ACCENT,BG,PANEL,BORDER,TEXT,TEXT_DIM,HOVER,ACTIVE,INPUT_BG|}, Color(\"${2:ff5050}\"))",
+      "ui.push_num(GoomeUI.S_${3|RADIUS,PAD,GAP,BORDER_WIDTH,FONT_SIZE|}, ${4:4})",
       "$0",
       "ui.pop(2)"
     ]
@@ -413,8 +422,11 @@
       "var it := ui.custom(\"$1\", ${2:80}, ${3:80}, GoomeUI.ITEM_DRAG_Y | GoomeUI.ITEM_FOCUSABLE)",
       "if it.held:",
       "\t$1[0] = clampf($1[0] - it.dy / 200, 0, 1)",
-      "\tui.store_set(\"$1\", $1)",
-      "ui.draw_arc(Vector2(it.x + 40, it.y + 40), 30, 2.36, 2.36 + 4.71 * $1[0], ui.theme_get(\"accent\"), 6)"
+      "ui.store_set(\"$1\", $1)",
+      "var accent: Color = ui.theme_get(\"accent\")",
+      "var c := Vector2(it.x + it.w / 2, it.y + it.h / 2)",
+      "ui.draw_arc(c, 30, 2.36, 2.36 + 4.71 * $1[0], accent, 6)",
+      "$0"
     ]
   },
   "goome hotkey": {
@@ -437,7 +449,7 @@
     "prefix": "goome-theme-make",
     "description": "make a theme from one accent color",
     "body": [
-      "ui.theme_make(${1:Color(\"4fa3ff\")}, ${2:true}, ${3:10.0})"
+      "ui.theme_make(Color(\"${1:4fa3ff}\"), ${2:true}, ${3:10})"
     ]
   },
   "goome ease": {
@@ -451,7 +463,7 @@
     "prefix": "goome-anim",
     "description": "animate a number toward a target, call it every frame",
     "body": [
-      "var ${1:x} := ui.anim(\"${2:panel x}\", ${3:0.0 if open else -300.0}, ${4:250}, GoomeUI.EASE_${5|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|})"
+      "var ${1:x} := ui.anim(\"${2:panel x}\", ${3:-300.0 if closed else 0.0}, ${4:250}, GoomeUI.EASE_${5|OUT,IN,IN_OUT,LINEAR,SMOOTH,BACK,SPRING,BOUNCE|})"
     ]
   },
   "goome anim color": {
@@ -463,19 +475,26 @@
   },
   "goome text input": {
     "prefix": "goome-text-input",
-    "description": "ime signals for typed and composing text, goome puts the candidate window at the caret itself",
+    "description": "typed and composing text from the ime signals",
     "body": [
+      "var ${1:typed} := \"\"",
+      "var ${2:composing} := \"\"",
+      "var ${3:at} := 0",
+      "",
+      "",
       "func _ready() -> void:",
-      "\time_text.connect(_on_typed)",
-      "\time_preedit.connect(_on_composing)",
+      "\time_text.connect(_on_ime_text)",
+      "\time_preedit.connect(_on_ime_preedit)",
       "",
       "",
-      "func _on_typed(${1:typed}: String) -> void:",
+      "func _on_ime_text(text: String) -> void:",
+      "\t$1 = text",
       "\t$0",
       "",
       "",
-      "func _on_composing(${2:composing}: String, ${3:at}: int) -> void:",
-      "\tpass"
+      "func _on_ime_preedit(text: String, caret: int) -> void:",
+      "\t$2 = text",
+      "\t$3 = caret"
     ]
   },
   "goome a11y": {
@@ -484,14 +503,14 @@
     "body": [
       "ui.a11y(true)",
       "ui.a11y_role(GoomeUI.ROLE_${1|SLIDER,BUTTON,CHECKBOX,PROGRESS,IMAGE,GROUP|}, \"${2:Volume}\")",
-      "ui.a11y_value(${3:\"50%\"})"
+      "ui.a11y_value(\"${3:50%}\")"
     ]
   },
   "goome font fallback": {
     "prefix": "goome-font-fallback",
     "description": "font that falls back to another one for chars it doesnt have",
     "body": [
-      "ui.font_fallback(\"${1:Inter}\", \"${2:Noto Sans CJK JP}\")"
+      "ui.font_fallback(load(\"res://${1:Inter.ttf}\"), load(\"res://${2:NotoSansCJK.ttf}\"))"
     ]
   },
   "goome text dir": {

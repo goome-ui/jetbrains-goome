@@ -1,0 +1,51 @@
+name: pr rules
+
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize, edited]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
+jobs:
+  check:
+    if: >-
+      github.event.pull_request.state == 'open' &&
+      github.event.pull_request.author_association != 'OWNER' &&
+      github.event.pull_request.author_association != 'MEMBER'
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+        run: |
+          why=""
+          if [ "$BASE" != "dev" ]; then
+            why="PRs go to the dev branch, this one is against $BASE."
+          fi
+          files=$(gh api "repos/$REPO/pulls/$PR/files?per_page=100" --paginate --jq '.[] | .filename, (.previous_filename // empty)')
+          if printf '%s\n' "$files" | grep -q '^\.github/'; then
+            why="$why It changes something in .github/, thats CI and these rules so only I change those."
+          fi
+          if printf '%s\n' "$files" | grep -qE '^(build\.gradle\.kts|settings\.gradle\.kts|gradle\.properties|gradlew|gradlew\.bat|gradle/|buildSrc/build\.gradle\.kts)'; then
+            why="$why It changes the gradle setup (build.gradle.kts, settings.gradle.kts, gradle.properties, the wrapper or buildSrc/build.gradle.kts). Those decide what gets downloaded, what runs and what ends up in the .zip, so only I touch them."
+          fi
+          if printf '%s\n' "$files" | grep -qxE 'LICENSE|src/main/resources/META-INF/pluginIcon\.svg|src/main/resources/icons/goome\.svg'; then
+            why="$why It changes the LICENSE or the icons, only I change those."
+          fi
+          if printf '%s\n' "$files" | grep -qE '^(snippets|schemas)/'; then
+            why="$why It changes snippets/ or schemas/, those are copied from vscode-goome so both stay the same. Change them in vscode-goome."
+          fi
+          if [ -z "$why" ]; then
+            echo "follows the rules"
+            exit 0
+          fi
+          gh api "repos/$REPO/labels" -f name=rules-closed -f color=b60205 -f description="closed by the pr rules" >/dev/null 2>&1 || true
+          gh api "repos/$REPO/issues/$PR/comments" -f body="Closed automatically, sorry. $why Check [CONTRIBUTING.md](https://github.com/goome-ui/jetbrains-goome/blob/dev/CONTRIBUTING.md), fix it and open a new PR against dev." >/dev/null
+          gh api "repos/$REPO/issues/$PR/labels" -f "labels[]=rules-closed" >/dev/null
+          gh api -X PATCH "repos/$REPO/pulls/$PR" -f state=closed >/dev/null
+          echo "closed: $why"

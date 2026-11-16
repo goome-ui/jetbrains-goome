@@ -3,7 +3,7 @@
     <name>goome</name>
     <vendor url="https://goome-ui.github.io/docs/">goome-ui</vendor>
     <description><![CDATA[
-<p>Live templates, a new project action, a .goome.json preview and quick docs for <a href="https://goome-ui.github.io/docs/">goome</a>, the see-through overlay and ui library.</p>
+<p>Live templates, a new project action, a .goome.json preview and quick docs for <a href="https://goome-ui.github.io/docs/">goome</a>. See-through overlays, normal app windows, game mod menus and engine ui. One file, no dependencies, Linux, Windows, Mac.</p>
 <ul>
 <li>type <code>goome</code> in C, C#, Python or Java and pick a template, same names as the VS Code extension</li>
 <li>a goome tool window on the left, next to Project: quick actions, every .goome.json in the project, templates that start New Project with them picked, and a snippet cheat sheet</li>

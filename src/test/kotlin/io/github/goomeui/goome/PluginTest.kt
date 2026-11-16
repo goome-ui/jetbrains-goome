@@ -121,7 +121,7 @@ class PluginTest : BasePlatformTestCase() {
     fun testToolWindowIsOnTheLeft() {
         val ep = ToolWindowEP.EP_NAME.extensionList.single { it.id == "goome" }
         assertEquals("left", ep.anchor)
-        assertEquals("/icons/toolWindow.svg", ep.icon)
+        assertEquals("/icons/toolWindowGoome.svg", ep.icon)
         assertEquals("io.github.goomeui.goome.sidebar.GoomeToolWindowFactory", ep.factoryClass)
     }
 

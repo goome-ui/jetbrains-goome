@@ -8,6 +8,7 @@ import com.intellij.openapi.actionSystem.ActionUpdateThread
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.openapi.util.text.StringUtil
@@ -18,6 +19,7 @@ import com.intellij.platform.backend.presentation.TargetPresentation
 import com.intellij.psi.PsiFile
 import com.intellij.ui.SimpleListCellRenderer
 import io.github.goomeui.goome.Goome
+import javax.swing.JComponent
 
 object GoomeDocs {
     data class Fn(val name: String, val sig: String, val note: String, val url: String)
@@ -79,24 +81,31 @@ class GoomeDocTarget(val fn: GoomeDocs.Fn) : DocumentationTarget {
 class SearchDocsAction : AnAction(), DumbAware {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun actionPerformed(e: AnActionEvent) {
-        val editor = e.getData(CommonDataKeys.EDITOR)
-        val word = editor?.let { ed ->
-            val sel = ed.selectionModel.selectedText?.trim()
-            if (!sel.isNullOrEmpty() && sel.startsWith("goome_")) sel else GoomeDocs.wordAt(ed.document.charsSequence, ed.caretModel.offset)
+    override fun actionPerformed(e: AnActionEvent) = show(e.getData(CommonDataKeys.EDITOR), null)
+
+    companion object {
+        fun show(editor: Editor?, near: JComponent?) {
+            val word = editor?.let { ed ->
+                val sel = ed.selectionModel.selectedText?.trim()
+                if (!sel.isNullOrEmpty() && sel.startsWith("goome_")) sel else GoomeDocs.wordAt(ed.document.charsSequence, ed.caretModel.offset)
+            }
+            val all = listOf(GoomeDocs.Fn("all the docs", "", "", Goome.DOCS_URL)) + GoomeDocs.functions.values
+            val pick = all.firstOrNull { it.name == word }
+            val builder = JBPopupFactory.getInstance().createPopupChooserBuilder(all)
+                .setTitle("goome Docs")
+                .setRenderer(SimpleListCellRenderer.create { label, fn, _ ->
+                    label.text = if (fn.note.isEmpty()) fn.name else fn.name + "  " + fn.note
+                    label.icon = Goome.ICON
+                })
+                .setNamerForFiltering { it.name }
+                .setItemChosenCallback { BrowserUtil.browse(it.url) }
+            if (pick != null) builder.setSelectedValue(pick, true)
+            val popup = builder.createPopup()
+            when {
+                near != null -> popup.showInCenterOf(near)
+                editor != null -> popup.showInBestPositionFor(editor)
+                else -> popup.showInFocusCenter()
+            }
         }
-        val all = listOf(GoomeDocs.Fn("all the docs", "", "", Goome.DOCS_URL)) + GoomeDocs.functions.values
-        val pick = all.firstOrNull { it.name == word }
-        val builder = JBPopupFactory.getInstance().createPopupChooserBuilder(all)
-            .setTitle("goome Docs")
-            .setRenderer(SimpleListCellRenderer.create { label, fn, _ ->
-                label.text = if (fn.note.isEmpty()) fn.name else fn.name + "  " + fn.note
-                label.icon = Goome.ICON
-            })
-            .setNamerForFiltering { it.name }
-            .setItemChosenCallback { BrowserUtil.browse(it.url) }
-        if (pick != null) builder.setSelectedValue(pick, true)
-        val popup = builder.createPopup()
-        if (editor != null) popup.showInBestPositionFor(editor) else popup.showInFocusCenter()
     }
 }

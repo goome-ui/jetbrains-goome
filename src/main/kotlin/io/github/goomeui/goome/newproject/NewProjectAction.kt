@@ -22,7 +22,7 @@ import io.github.goomeui.goome.Goome
 import java.io.File
 import javax.swing.JComponent
 
-class NewProjectDialog(project: Project?) : DialogWrapper(project, true) {
+class NewProjectDialog(project: Project?, langId: String? = null, templateId: String? = null) : DialogWrapper(project, true) {
     val lang = ComboBox(GoomeCli.LANGS.toTypedArray())
     val template = ComboBox(GoomeCli.TEMPLATES.toTypedArray())
     val folder = TextFieldWithBrowseButton()
@@ -32,6 +32,8 @@ class NewProjectDialog(project: Project?) : DialogWrapper(project, true) {
         title = "goome: New Project"
         folder.text = project?.basePath?.let { File(it).parent } ?: System.getProperty("user.home")
         folder.addBrowseFolderListener(project, FileChooserDescriptorFactory.createSingleFolderDescriptor().withTitle("Where Should the Project Go?"))
+        GoomeCli.LANGS.firstOrNull { it.id == langId }?.let { lang.selectedItem = it }
+        GoomeCli.TEMPLATES.firstOrNull { it.id == templateId }?.let { template.selectedItem = it }
         setOKButtonText("Make It")
         init()
     }
@@ -61,33 +63,39 @@ class NewProjectDialog(project: Project?) : DialogWrapper(project, true) {
 class NewProjectAction : AnAction(), DumbAware {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
-    override fun actionPerformed(e: AnActionEvent) {
-        val project = e.project
-        val dlg = NewProjectDialog(project)
-        if (!dlg.showAndGet()) return
-        val lang = (dlg.lang.selectedItem as GoomeCli.Choice).id
-        val template = (dlg.template.selectedItem as GoomeCli.Choice).id
-        val name = dlg.name.text.trim()
-        val parent = File(dlg.folder.text.trim())
-        val dest = dlg.dest()
-        object : Task.Modal(project, "Making $name...", true) {
-            override fun run(indicator: ProgressIndicator) {
-                indicator.isIndeterminate = true
-                indicator.text = "finding goome-cli"
-                val r = GoomeCli.findRunner()
-                indicator.text = "running " + r.how
-                val out = GoomeCli.run(r, GoomeCli.newArgs(name, lang, template, dest.path), parent)
-                if (!dest.isDirectory) throw IllegalStateException("goome-cli finished but ${dest.path} isnt there: ${out.trim()}")
-                LocalFileSystem.getInstance().refreshAndFindFileByIoFile(dest)
-            }
+    override fun actionPerformed(e: AnActionEvent) = start(e.project)
 
-            override fun onSuccess() {
-                ProjectUtil.openOrImport(dest.toPath(), project, false)
-            }
+    companion object {
+        fun start(project: Project?, langId: String? = null, templateId: String? = null) {
+            val dlg = NewProjectDialog(project, langId, templateId)
+            if (dlg.showAndGet()) make(project, dlg)
+        }
 
-            override fun onThrowable(error: Throwable) {
-                Goome.say(project, error.message ?: error.toString(), NotificationType.ERROR)
-            }
-        }.queue()
+        private fun make(project: Project?, dlg: NewProjectDialog) {
+            val lang = (dlg.lang.selectedItem as GoomeCli.Choice).id
+            val template = (dlg.template.selectedItem as GoomeCli.Choice).id
+            val name = dlg.name.text.trim()
+            val parent = File(dlg.folder.text.trim())
+            val dest = dlg.dest()
+            object : Task.Modal(project, "Making $name...", true) {
+                override fun run(indicator: ProgressIndicator) {
+                    indicator.isIndeterminate = true
+                    indicator.text = "finding goome-cli"
+                    val r = GoomeCli.findRunner()
+                    indicator.text = "running " + r.how
+                    val out = GoomeCli.run(r, GoomeCli.newArgs(name, lang, template, dest.path), parent)
+                    if (!dest.isDirectory) throw IllegalStateException("goome-cli finished but ${dest.path} isnt there: ${out.trim()}")
+                    LocalFileSystem.getInstance().refreshAndFindFileByIoFile(dest)
+                }
+
+                override fun onSuccess() {
+                    ProjectUtil.openOrImport(dest.toPath(), project, false)
+                }
+
+                override fun onThrowable(error: Throwable) {
+                    Goome.say(project, error.message ?: error.toString(), NotificationType.ERROR)
+                }
+            }.queue()
+        }
     }
 }

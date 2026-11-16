@@ -32,9 +32,51 @@ jobs:
           java-version: 21
       - uses: gradle/actions/setup-gradle@v5
       - run: ./gradlew --no-daemon buildPlugin test
+      - uses: actions/upload-artifact@v6
+        with:
+          name: plugin-zip
+          path: build/distributions/jetbrains-goome-*.zip
       - name: upload
         run: |
           f="build/distributions/jetbrains-goome-${TAG#v}.zip"
           [ -f "$f" ] || { ls build/distributions; exit 1; }
           gh release view "$TAG" > /dev/null 2>&1 || gh release create "$TAG" --verify-tag --title "jetbrains-goome ${TAG#v}" --notes "jetbrains-goome ${TAG#v}. Grab the .zip below, then Settings > Plugins > the gear > Install Plugin from Disk... and pick it. Dont unzip it."
           gh release upload "$TAG" "$f" --clobber
+
+  marketplace:
+    needs: zip
+    runs-on: ubuntu-latest
+    environment: marketplace
+    permissions:
+      contents: read
+    env:
+      TAG: ${{ github.ref_name }}
+      PUBLISH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+    steps:
+      - name: token check
+        id: check
+        run: |
+          if [ -z "$PUBLISH_TOKEN" ]; then
+            echo "PUBLISH_TOKEN is empty, skipping the marketplace upload"
+            echo "skip=1" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/checkout@v6
+        if: steps.check.outputs.skip != '1'
+      - uses: actions/download-artifact@v6
+        if: steps.check.outputs.skip != '1'
+        with:
+          name: plugin-zip
+          path: dist
+      - uses: actions/setup-java@v5
+        if: steps.check.outputs.skip != '1'
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v5
+        if: steps.check.outputs.skip != '1'
+      - name: publish
+        if: steps.check.outputs.skip != '1'
+        run: |
+          f="dist/jetbrains-goome-${TAG#v}.zip"
+          [ -f "$f" ] || { ls dist; exit 1; }
+          ./gradlew --no-daemon publishPlugin -PpublishZip="$f" -x buildPlugin -x signPlugin

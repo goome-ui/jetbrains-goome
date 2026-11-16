@@ -14,6 +14,8 @@ import io.github.goomeui.goome.docs.GoomeDocTargets
 import io.github.goomeui.goome.docs.GoomeDocs
 import io.github.goomeui.goome.preview.GoomePreviewProvider
 import io.github.goomeui.goome.preview.PreviewPage
+import io.github.goomeui.goome.sidebar.GoomePanel
+import com.intellij.openapi.wm.ToolWindowEP
 import java.io.File
 
 class PluginTest : BasePlatformTestCase() {
@@ -114,5 +116,39 @@ class PluginTest : BasePlatformTestCase() {
         assertTrue(text!!.contains(">goome-overlay<"))
         assertTrue(text.contains(">InCSharpFile<"))
         assertTrue(text.contains(">InCppFile<"))
+    }
+
+    fun testToolWindowIsOnTheLeft() {
+        val ep = ToolWindowEP.EP_NAME.extensionList.single { it.id == "goome" }
+        assertEquals("left", ep.anchor)
+        assertEquals("/icons/toolWindow.svg", ep.icon)
+        assertEquals("io.github.goomeui.goome.sidebar.GoomeToolWindowFactory", ep.factoryClass)
+    }
+
+    fun testToolWindowPanel() {
+        val demo = add("demo.goome.json", "ui/demo.goome.json")
+        add("midnight.goome-theme.json")
+        val panel = GoomePanel(project, testRootDisposable)
+        panel.setFiles(panel.findFiles())
+        val items = panel.items()
+        assertEquals(listOf("Quick actions", "Builder files", "Templates", "Snippets"), items.map { it.label })
+        assertEquals(listOf("midnight.goome-theme.json", "demo.goome.json"), items[1].children.map { it.label })
+        assertTrue(panel.tree.rowCount > 10)
+        panel.run(items[1].children.single { it.label == "demo.goome.json" })
+        assertEquals(demo, com.intellij.openapi.fileEditor.FileEditorManager.getInstance(project).selectedFiles.firstOrNull())
+    }
+
+    fun testSnippetFromToolWindow() {
+        TemplateManagerImpl.setTemplateTesting(testRootDisposable)
+        myFixture.configureByText("A.java", "class A { void f() { <caret> } }")
+        val panel = GoomePanel(project, testRootDisposable)
+        assertEquals("java", panel.lang)
+        val button = panel.items()[3].children.single { it.label == "goome-button" }
+        assertTrue(panel.insertSnippet(button.arg, button.arg2))
+        assertTrue(myFixture.editor.document.text, myFixture.editor.document.text.contains("ui.button("))
+        myFixture.configureByText("x.txt", "")
+        assertTrue(panel.insertSnippet("csharp", "goome-button"))
+        assertTrue(myFixture.editor.document.text, myFixture.editor.document.text.contains("ui.Button("))
+        assertFalse(myFixture.editor.document.text.contains("\${"))
     }
 }

@@ -282,6 +282,7 @@ object GoomeSync {
         goome.resolve("hover.json").writeText(hoverJson(header, docs))
         root.resolve("schemas").listFiles()!!.forEach { it.copyTo(out.resolve("schemas/${it.name}"), true) }
 
+        for (lang in LANGS) root.resolve("snippets/$lang.json").copyTo(goome.resolve("snippets/$lang.json"), true)
         val snippets = LANGS.associateWith { readSnippets(root.resolve("snippets/$it.json")) }
         val lt = out.resolve("liveTemplates")
         lt.mkdirs()

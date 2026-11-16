@@ -6,6 +6,7 @@
 <p>Live templates, a new project action, a .goome.json preview and quick docs for <a href="https://goome-ui.github.io/docs/">goome</a>, the see-through overlay and ui library.</p>
 <ul>
 <li>type <code>goome</code> in C, C#, Python or Java and pick a template, same names as the VS Code extension</li>
+<li>a goome tool window on the left, next to Project: quick actions, every .goome.json in the project, templates that start New Project with them picked, and a snippet cheat sheet</li>
 <li><b>Tools &gt; goome: New Project</b> runs goome-cli and opens what it made</li>
 <li>.goome.json and .goome-theme.json get checked against the goome schemas while you type</li>
 <li>.goome.json opens with a live read only preview, plus buttons that copy the C, C#, Python or Java code</li>
@@ -24,6 +25,8 @@
         <fileType name="goome project" implementationClass="io.github.goomeui.goome.GoomeProjectFileType" fieldName="INSTANCE" language="JSON" patterns="*.goome.json"/>
         <fileType name="goome theme" implementationClass="io.github.goomeui.goome.GoomeThemeFileType" fieldName="INSTANCE" language="JSON" patterns="*.goome-theme.json"/>
         <fileEditorProvider implementation="io.github.goomeui.goome.preview.GoomePreviewProvider"/>
+        <toolWindow id="goome" anchor="left" icon="/icons/toolWindow.svg" factoryClass="io.github.goomeui.goome.sidebar.GoomeToolWindowFactory"/>
+        <iconMapper mappingFile="goomeIconMappings.json"/>
         <applicationService serviceImplementation="io.github.goomeui.goome.GoomeSettings"/>
         <applicationConfigurable parentId="tools" instance="io.github.goomeui.goome.GoomeConfigurable" id="goome.settings" displayName="goome"/>
         <notificationGroup id="goome" displayType="BALLOON"/>

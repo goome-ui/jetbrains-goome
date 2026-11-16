@@ -37,9 +37,29 @@ object GoomeDocs {
         return out
     }
 
+    val BINDING_EXTS = setOf("rs", "js", "mjs", "cjs", "jsx", "ts", "mts", "cts", "tsx", "go", "zig", "lua", "gd")
+
+    private fun squash(name: String) = name.replace("_", "").lowercase()
+
+    val byBindingName: Map<String, Fn> by lazy {
+        val out = linkedMapOf<String, Fn>()
+        for (fn in functions.values) if (fn.name.startsWith("goome_ui_")) out.putIfAbsent(squash(fn.name.removePrefix("goome_ui_")), fn)
+        for (fn in functions.values) if (!fn.name.startsWith("goome_ui_")) out.putIfAbsent(squash(fn.name.removePrefix("goome_")), fn)
+        out
+    }
+
+    fun bindingFn(text: CharSequence, offset: Int, ext: String?): Fn? {
+        if (ext == null || ext.lowercase() !in BINDING_EXTS) return null
+        if (!text.contains("goome", ignoreCase = true)) return null
+        val word = anyWordAt(text, offset) ?: return null
+        return byBindingName[squash(word)]
+    }
+
     private fun isWord(c: Char) = c == '_' || c.isLetterOrDigit()
 
-    fun wordAt(text: CharSequence, offset: Int): String? {
+    fun wordAt(text: CharSequence, offset: Int): String? = anyWordAt(text, offset)?.takeIf { it.startsWith("goome_") }
+
+    fun anyWordAt(text: CharSequence, offset: Int): String? {
         if (text.isEmpty()) return null
         var at = offset.coerceIn(0, text.length)
         if (at == text.length || !isWord(text[at])) at--
@@ -48,8 +68,7 @@ object GoomeDocs {
         var e = at + 1
         while (s > 0 && isWord(text[s - 1])) s--
         while (e < text.length && isWord(text[e])) e++
-        val word = text.substring(s, e)
-        return if (word.startsWith("goome_")) word else null
+        return text.substring(s, e)
     }
 
     fun html(fn: Fn): String {
@@ -65,8 +84,9 @@ object GoomeDocs {
 
 class GoomeDocTargets : DocumentationTargetProvider {
     override fun documentationTargets(file: PsiFile, offset: Int): List<DocumentationTarget> {
-        val name = GoomeDocs.wordAt(file.viewProvider.contents, offset) ?: return emptyList()
-        val fn = GoomeDocs.functions[name] ?: return emptyList()
+        val text = file.viewProvider.contents
+        val named = GoomeDocs.wordAt(text, offset)?.let { GoomeDocs.functions[it] }
+        val fn = named ?: GoomeDocs.bindingFn(text, offset, file.virtualFile?.extension ?: file.name.substringAfterLast('.', "")) ?: return emptyList()
         return listOf(GoomeDocTarget(fn))
     }
 }

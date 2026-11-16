@@ -2,6 +2,7 @@ package io.github.goomeui.goome
 
 import com.google.gson.JsonParser
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
@@ -35,6 +36,7 @@ class SnippetTest {
         return text
             .replace(Regex("\\$\\{(\\d+)[:|][^}]*}")) { defs[it.groupValues[1]] ?: "" }
             .replace(Regex("\\$\\{(\\d+)}|\\$(\\d+)")) { defs[it.groupValues[1].ifEmpty { it.groupValues[2] }] ?: "" }
+            .replace(Regex("\\\\([$}\\\\])")) { it.groupValues[1] }
     }
 
     private fun expandTemplate(value: String, vars: Map<String, String>): String =
@@ -114,6 +116,94 @@ class SnippetTest {
     fun pythonTemplatesMatchSnippets() = same(snippets("python"), liveTemplates("python"), tabsToSpaces = true)
 
     @Test
+    fun rustTemplatesMatchSnippets() = same(snippets("rust"), liveTemplates("rust"), tabsToSpaces = true)
+
+    @Test
+    fun nodeTemplatesMatchSnippets() = same(snippets("node"), liveTemplates("node"))
+
+    @Test
+    fun goTemplatesMatchSnippets() = same(snippets("go"), liveTemplates("go"))
+
+    @Test
+    fun zigTemplatesMatchSnippets() = same(snippets("zig"), liveTemplates("zig"), tabsToSpaces = true)
+
+    @Test
+    fun luaTemplatesMatchSnippets() = same(snippets("lua"), liveTemplates("lua"), tabsToSpaces = true)
+
+    @Test
+    fun godotTemplatesMatchSnippets() = same(snippets("godot"), liveTemplates("godot"))
+
+    @Test
+    fun templatesUseTheRightContexts() {
+        val want = mapOf(
+            "c" to setOf("OC_DECLARATION_C", "OC_STATEMENT_C", "OC_DECLARATION_CPP", "OC_STATEMENT_CPP"),
+            "java" to setOf("JAVA_CODE"),
+            "python" to setOf("Python"),
+            "rust" to setOf("RUST_ITEM", "RUST_STATEMENT"),
+            "node" to setOf("JS_TOP_LEVEL_STATEMENT", "JS_STATEMENT", "TS_TOP_LEVEL_STATEMENT", "TS_STATEMENT"),
+            "go" to setOf("GO_FILE", "GO_STATEMENT"),
+            "zig" to setOf("OTHER"),
+            "lua" to setOf("LUA_CODE"),
+            "godot" to setOf("GDSCRIPT"),
+        )
+        for ((lang, contexts) in want) {
+            val list = xml("/liveTemplates/goome-$lang.xml").getElementsByTagName("option")
+            val got = (0 until list.length).map { (list.item(it) as Element).getAttribute("name") }.toSet()
+            assertEquals(lang, contexts, got)
+        }
+    }
+
+    @Test
+    fun optionalPluginsHaveTheirOwnConfig() {
+        val doc = xml("/META-INF/plugin.xml")
+        val list = doc.getElementsByTagName("depends")
+        val optional = (0 until list.length).map { list.item(it) as Element }.filter { it.getAttribute("optional") == "true" }
+        val byPlugin = optional.associate { it.textContent.trim() to it.getAttribute("config-file") }
+        assertEquals(
+            mapOf(
+                "com.intellij.java" to "goome-java.xml", "com.intellij.modules.python" to "goome-python.xml", "com.intellij.modules.clion" to "goome-c.xml",
+                "com.jetbrains.rust" to "goome-rust.xml", "JavaScript" to "goome-node.xml", "org.jetbrains.plugins.go" to "goome-go.xml",
+                "com.falsepattern.zigbrains" to "goome-zig.xml", "com.tang" to "goome-lua.xml", "com.intellij.rider.godot" to "goome-godot.xml",
+            ),
+            byPlugin,
+        )
+        for ((_, file) in byPlugin) {
+            val cfg = xml("/META-INF/$file")
+            val ext = cfg.getElementsByTagName("defaultLiveTemplates")
+            assertEquals(file, 1, ext.length)
+            val path = (ext.item(0) as Element).getAttribute("file")
+            assertNotNull(path, javaClass.getResource(path))
+            assertEquals("/liveTemplates/" + file.removeSuffix(".xml") + ".xml", path)
+        }
+        val plain = doc.getElementsByTagName("depends")
+        val hard = (0 until plain.length).map { plain.item(it) as Element }.filter { it.getAttribute("optional") != "true" }.map { it.textContent.trim() }
+        assertEquals(listOf("com.intellij.modules.platform", "com.intellij.modules.json"), hard)
+    }
+
+    @Test
+    fun everyLanguageUsesTheSharedPrefixes() {
+        val shared = snippets("java").map { it.prefix }.toSet()
+        assertEquals(58, shared.size)
+        for (lang in listOf("csharp", "python", "rust", "node", "go", "zig", "lua", "godot")) {
+            val got = snippets(lang).map { it.prefix }
+            assertEquals(lang, got.size, got.toSet().size)
+            assertTrue("$lang has prefixes java doesnt: " + (got.toSet() - shared), (shared + "goome-view").containsAll(got))
+            assertTrue("$lang only has ${got.size}", got.size >= 55)
+            for (must in listOf("goome-overlay", "goome-app", "goome-loop", "goome-button", "goome-slider", "goome-theme-preset")) assertTrue("$lang is missing $must", must in got)
+        }
+    }
+
+    @Test
+    fun snippetsHaveNoComments() {
+        for (lang in listOf("rust", "node", "go", "zig", "lua", "godot")) for (s in snippets(lang)) {
+            for (line in s.text.lines()) {
+                val t = line.trim()
+                assertFalse("$lang ${s.prefix}: $t", t.startsWith("//") || t.startsWith("--") || t.startsWith("#") || t.startsWith("/*"))
+            }
+        }
+    }
+
+    @Test
     fun riderTemplatesMatchSnippets() {
         val ds = dotSettings()
         same(snippets("csharp"), ds.getValue("InCSharpFile"))
@@ -122,7 +212,7 @@ class SnippetTest {
 
     @Test
     fun everyPrefixStartsWithGoome() {
-        for (lang in listOf("c", "csharp", "python", "java")) for (s in snippets(lang)) assertTrue(s.prefix, s.prefix.startsWith("goome-"))
+        for (lang in listOf("c", "csharp", "python", "java", "rust", "node", "go", "zig", "lua", "godot")) for (s in snippets(lang)) assertTrue(s.prefix, s.prefix.startsWith("goome-"))
     }
 
     @Test

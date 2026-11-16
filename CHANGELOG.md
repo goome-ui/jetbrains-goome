@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.5.2
+
+- live templates for Rust, JavaScript and TypeScript (Node), Go, Zig, Lua and GDScript, with the real names and argument orders of each binding. the same goome-* prefixes as the other languages, 58 of them (GDScript has goome-view instead of goome-offscreen, a GoomeView cant push a click)
+- they show up in the IDE that has that languages plugin: RustRover or the Rust plugin, WebStorm or the JavaScript plugin, GoLand or the Go plugin, ZigBrains for Zig, EmmyLua for Lua and Godot Support (built into Rider) for GDScript. without the plugin they just arent loaded and nothing breaks
+- goome: New Project offers all ten templates now: C, C#, Python, Java, Godot, Rust, Node, Go, Zig and Lua
+- the goome tool window lists the templates for all ten languages and the cheat sheet follows .rs, .js, .ts, .go, .zig, .lua and .gd files
+- quick docs also work on the binding names (ui.slider_int, ui.sliderInt, ui.SliderInt) in Rust, JavaScript, TypeScript, Go, Zig, Lua and GDScript files that mention goome
+- GDScript, Rust, Node, Go, Zig and Lua buttons next to the other Copy code buttons in the preview, so all ten languages
+- the readme has a table per language of what it gets and which IDE it needs. Build for Web is still C only
+- new goome: Build for Web in Tools > goome, on the right click menu of .c files and in the project view. It runs goome build --web in the background and puts index.html, goome.js and goome.wasm in a web folder
+- errors show up as a notification and the whole text goes to a goome build window at the bottom
+- when it works the notification has Open in Browser, which starts goome serve and opens the page, and Show Folder
+- goome: Stop Web Server in Tools > goome, the server also stops when you close the project
+- new c-goome checkout setting in Settings > Tools > goome, it goes to goome build --web as --goome. Needed until the downloaded c-goome releases have the web build
+- web builds need clang and lld with the wasm target, the error tells you how to install them
+
 ## 0.5.1
 
 - the readme points at the marketplace now instead of saying its coming soon

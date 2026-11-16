@@ -24,6 +24,11 @@ object GoomeCli {
         Choice("python", "Python", "Python 3.8 or newer"),
         Choice("java", "Java", "Java 22 or newer, Gradle"),
         Choice("godot", "Godot", "Godot 4.4 or newer, GDScript"),
+        Choice("rust", "Rust", "Rust 1.77 or newer, cargo"),
+        Choice("node", "Node", "Node 18 or newer, npm"),
+        Choice("go", "Go", "Go 1.23 or newer, cgo with a C compiler"),
+        Choice("zig", "Zig", "Zig 0.15.2"),
+        Choice("lua", "Lua", "Lua 5.4 or LuaJIT, LuaRocks and a C compiler"),
     )
 
     val TEMPLATES = listOf(

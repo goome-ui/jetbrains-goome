@@ -35,7 +35,7 @@ class SidebarTest {
     @Test
     fun templatesPerLanguage() {
         val langs = GoomeSidebar.templates()
-        assertEquals(listOf("C", "C#", "Python", "Java", "Godot"), langs.map { it.label })
+        assertEquals(listOf("C", "C#", "Python", "Java", "Godot", "Rust", "Node", "Go", "Zig", "Lua"), langs.map { it.label })
         for (l in langs) {
             assertEquals(listOf("app", "overlay", "mod-menu", "hud"), l.children.map { it.label })
             for (t in l.children) {
@@ -72,6 +72,13 @@ class SidebarTest {
         assertEquals("csharp", GoomeSidebar.snippetLang("cs"))
         assertEquals("python", GoomeSidebar.snippetLang("py"))
         assertEquals("java", GoomeSidebar.snippetLang("JAVA"))
+        assertEquals("rust", GoomeSidebar.snippetLang("rs"))
+        assertEquals("node", GoomeSidebar.snippetLang("ts"))
+        assertEquals("node", GoomeSidebar.snippetLang("mjs"))
+        assertEquals("go", GoomeSidebar.snippetLang("go"))
+        assertEquals("zig", GoomeSidebar.snippetLang("zig"))
+        assertEquals("lua", GoomeSidebar.snippetLang("lua"))
+        assertEquals("godot", GoomeSidebar.snippetLang("gd"))
         assertEquals("c", GoomeSidebar.snippetLang("md"))
         assertEquals("c", GoomeSidebar.snippetLang(null))
     }
@@ -85,7 +92,7 @@ class SidebarTest {
             assertEquals(prefixes, items.map { it.label })
             assertTrue(items.all { it.kind == Kind.SNIPPET && it.arg == lang && it.arg2 == it.label && it.detail.isNotEmpty() })
         }
-        assertEquals(emptyList<Any>(), GoomeSidebar.snippets("rust"))
+        assertEquals(emptyList<Any>(), GoomeSidebar.snippets("ruby"))
     }
 
     @Test

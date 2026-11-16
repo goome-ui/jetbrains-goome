@@ -10,6 +10,7 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import com.jetbrains.jsonSchema.extension.JsonSchemaProviderFactory
 import com.jetbrains.jsonSchema.ide.JsonSchemaService
 import com.jetbrains.jsonSchema.impl.inspections.JsonSchemaComplianceInspection
+import io.github.goomeui.goome.docs.GoomeDocTarget
 import io.github.goomeui.goome.docs.GoomeDocTargets
 import io.github.goomeui.goome.docs.GoomeDocs
 import io.github.goomeui.goome.preview.GoomePreviewProvider
@@ -83,6 +84,25 @@ class PluginTest : BasePlatformTestCase() {
         assertEquals(0, GoomeDocTargets().documentationTargets(file, 2).size)
     }
 
+    fun testDocsForBindingNames() {
+        val rust = myFixture.configureByText("main.rs", "use goome::Goome;\nfn f() { ui.slider_int(); g.close(); }")
+        val at = rust.text.indexOf("slider_int") + 2
+        val targets = GoomeDocTargets().documentationTargets(rust, at)
+        assertEquals(1, targets.size)
+        assertEquals("goome_ui_slider_int", (targets[0] as GoomeDocTarget).fn.name)
+        val go = myFixture.configureByText("main.go", "import \"goome\"\nfunc f() { ui.SliderInt(); g.Close() }")
+        assertEquals("goome_ui_slider_int", (GoomeDocTargets().documentationTargets(go, go.text.indexOf("SliderInt") + 1)[0] as GoomeDocTarget).fn.name)
+        assertEquals("goome_close", (GoomeDocTargets().documentationTargets(go, go.text.indexOf("Close") + 1)[0] as GoomeDocTarget).fn.name)
+        val js = myFixture.configureByText("app.js", "const goome = require('goome');\nui.sliderInt(1)")
+        assertEquals(1, GoomeDocTargets().documentationTargets(js, js.text.indexOf("sliderInt") + 1).size)
+        val lua = myFixture.configureByText("x.lua", "local goome = require('goome')\nui:slider_int()")
+        assertEquals(1, GoomeDocTargets().documentationTargets(lua, lua.text.indexOf("slider_int") + 1).size)
+        val unrelated = myFixture.configureByText("other.rs", "fn f() { ui.slider_int(); }")
+        assertEquals(0, GoomeDocTargets().documentationTargets(unrelated, unrelated.text.indexOf("slider_int") + 1).size)
+        val java = myFixture.configureByText("A.java", "import goome; class A { void f() { ui.sliderInt(); } }")
+        assertEquals(0, GoomeDocTargets().documentationTargets(java, java.text.indexOf("sliderInt") + 1).size)
+    }
+
     fun testWordAt() {
         val t = "x = goome_ui_button(u, \"hi\");"
         assertEquals("goome_ui_button", GoomeDocs.wordAt(t, 4))
@@ -95,7 +115,7 @@ class PluginTest : BasePlatformTestCase() {
     fun testPreviewPage() {
         val html = PreviewPage.html("SEND(m)")
         assertTrue(html.contains("window.goomeSend = function (m) { SEND(m) };"))
-        for (lang in listOf("c", "cs", "py", "java")) assertTrue(html.contains("data-copy=\"$lang\""))
+        for (lang in listOf("c", "cs", "py", "java", "gd")) assertTrue(html.contains("data-copy=\"$lang\""))
         assertTrue(html.contains("GMCode"))
         assertTrue(html.contains("window.goomeLoad"))
         assertTrue(html.contains("Open in UI builder"))

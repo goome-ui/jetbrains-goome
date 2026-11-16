@@ -36,7 +36,7 @@ import java.beans.PropertyChangeListener
 import javax.swing.JComponent
 
 object PreviewPage {
-    val CODE_LANGS = linkedMapOf("c" to "C", "cs" to "C#", "py" to "Python", "java" to "Java")
+    val CODE_LANGS = linkedMapOf("c" to "C", "cs" to "C#", "py" to "Python", "java" to "Java", "gd" to "GDScript")
     val SCRIPTS = listOf("model.js", "codegen.js", "elements.js", "app.js", "stage.js", "vars.js")
     val STYLES = listOf("builder/style.css", "builder/elements.css")
 

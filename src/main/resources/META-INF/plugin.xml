@@ -5,15 +5,15 @@
     <description><![CDATA[
 <p>Live templates, a new project action, a .goome.json preview and quick docs for <a href="https://goome-ui.github.io/docs/">goome</a>. See-through overlays, normal app windows, game mod menus and engine ui. One file, no dependencies, Linux, Windows, Mac.</p>
 <ul>
-<li>type <code>goome</code> in C, C#, Python or Java and pick a template, same names as the VS Code extension</li>
+<li>type <code>goome</code> in C, C#, Python, Java, Rust, JavaScript, TypeScript, Go, Zig, Lua or GDScript and pick a template, with the real names of each binding. C, C#, Python and Java use the same names as the VS Code extension</li>
 <li>a goome tool window on the left, next to Project: quick actions, every .goome.json in the project, templates that start New Project with them picked, and a snippet cheat sheet</li>
-<li><b>Tools &gt; goome: New Project</b> runs goome-cli and opens what it made</li>
+<li><b>Tools &gt; goome: New Project</b> runs goome-cli with any of the ten templates (C, C#, Python, Java, Godot, Rust, Node, Go, Zig, Lua) and opens what it made</li>
 <li>.goome.json and .goome-theme.json get checked against the goome schemas while you type</li>
-<li>.goome.json opens with a live read only preview, plus buttons that copy the C, C#, Python or Java code</li>
+<li>.goome.json opens with a live read only preview, plus buttons that copy the C, C#, Python, Java or GDScript code</li>
 <li><b>Tools &gt; goome: Build for Web</b> runs <code>goome build --web</code> on a C app, then opens it in the browser through <code>goome serve</code></li>
-<li>quick docs for <code>goome_*</code> C functions, and <b>goome: Search Docs</b> everywhere</li>
+<li>quick docs for <code>goome_*</code> C functions and the binding names in Rust, JavaScript, TypeScript, Go, Zig, Lua and GDScript, and <b>goome: Search Docs</b> everywhere</li>
 </ul>
-<p>Works in Rider, CLion, IntelliJ IDEA and PyCharm, each gets the parts that fit it.</p>
+<p>Works in Rider, CLion, IntelliJ IDEA, PyCharm, RustRover, GoLand and WebStorm, each gets the parts that fit it. Live templates need the plugin for that language: Rust, JavaScript, Go, ZigBrains, EmmyLua or Godot Support (built into Rider). Without it the plugin loads fine and skips them.</p>
 ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
@@ -21,6 +21,12 @@
     <depends optional="true" config-file="goome-java.xml">com.intellij.java</depends>
     <depends optional="true" config-file="goome-python.xml">com.intellij.modules.python</depends>
     <depends optional="true" config-file="goome-c.xml">com.intellij.modules.clion</depends>
+    <depends optional="true" config-file="goome-rust.xml">com.jetbrains.rust</depends>
+    <depends optional="true" config-file="goome-node.xml">JavaScript</depends>
+    <depends optional="true" config-file="goome-go.xml">org.jetbrains.plugins.go</depends>
+    <depends optional="true" config-file="goome-zig.xml">com.falsepattern.zigbrains</depends>
+    <depends optional="true" config-file="goome-lua.xml">com.tang</depends>
+    <depends optional="true" config-file="goome-godot.xml">com.intellij.rider.godot</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="goome project" implementationClass="io.github.goomeui.goome.GoomeProjectFileType" fieldName="INSTANCE" language="JSON" patterns="*.goome.json"/>

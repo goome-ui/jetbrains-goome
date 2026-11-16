@@ -6,7 +6,8 @@ import java.util.UUID
 object GoomeSync {
     const val DOCS_URL = "https://goome-ui.github.io/docs/"
     val BUILDER_FILES = listOf("model.js", "codegen.js", "elements.js", "app.js", "stage.js", "vars.js", "style.css", "elements.css")
-    val LANGS = listOf("c", "csharp", "python", "java")
+    val LANGS = listOf("c", "csharp", "python", "java", "rust", "node", "go", "zig", "lua", "godot")
+    val TEMPLATE_LANGS = listOf("c", "java", "python", "rust", "node", "go", "zig", "lua", "godot")
 
     sealed class Part {
         data class Text(val s: String) : Part()
@@ -148,17 +149,27 @@ object GoomeSync {
         "c" to listOf("OC_DECLARATION_C", "OC_STATEMENT_C", "OC_DECLARATION_CPP", "OC_STATEMENT_CPP"),
         "java" to listOf("JAVA_CODE"),
         "python" to listOf("Python"),
+        "rust" to listOf("RUST_ITEM", "RUST_STATEMENT"),
+        "node" to listOf("JS_TOP_LEVEL_STATEMENT", "JS_STATEMENT", "TS_TOP_LEVEL_STATEMENT", "TS_STATEMENT"),
+        "go" to listOf("GO_FILE", "GO_STATEMENT"),
+        "zig" to listOf("OTHER"),
+        "lua" to listOf("LUA_CODE"),
+        "godot" to listOf("GDSCRIPT"),
     )
 
-    val GROUPS = mapOf("c" to "goome C", "java" to "goome Java", "python" to "goome Python")
+    val SPACES = setOf("python", "rust", "zig", "lua")
+    val NO_REFORMAT = setOf("python", "zig", "lua", "godot")
+
+    val GROUPS = mapOf("c" to "goome C", "java" to "goome Java", "python" to "goome Python",
+        "rust" to "goome Rust", "node" to "goome JavaScript", "go" to "goome Go", "zig" to "goome Zig", "lua" to "goome Lua", "godot" to "goome GDScript")
 
     fun liveTemplates(lang: String, snippets: List<Snippet>): String {
         val sb = StringBuilder()
         sb.append("<templateSet group=\"").append(GROUPS.getValue(lang)).append("\">\n")
         for (s in snippets) {
-            val parts = if (lang == "python") spaces(s.parts) else s.parts
+            val parts = if (lang in SPACES) spaces(s.parts) else s.parts
             val value = templateText(parts) { "P$it" }
-            val reformat = lang != "python"
+            val reformat = lang !in NO_REFORMAT
             sb.append("  <template name=\"").append(attr(s.prefix)).append("\" value=\"").append(attr(value))
                 .append("\" description=\"").append(attr(s.description)).append("\" toReformat=\"").append(reformat)
                 .append("\" toShortenFQNames=\"true\">\n")
@@ -286,7 +297,7 @@ object GoomeSync {
         val snippets = LANGS.associateWith { readSnippets(root.resolve("snippets/$it.json")) }
         val lt = out.resolve("liveTemplates")
         lt.mkdirs()
-        for (lang in listOf("c", "java", "python")) lt.resolve("goome-$lang.xml").writeText(liveTemplates(lang, snippets.getValue(lang)))
+        for (lang in TEMPLATE_LANGS) lt.resolve("goome-$lang.xml").writeText(liveTemplates(lang, snippets.getValue(lang)))
         val ds = out.resolve("dotnet/Extensions/$pluginId/settings/goome.DotSettings")
         ds.parentFile.mkdirs()
         ds.writeText(dotSettings(linkedMapOf("csharp" to snippets.getValue("csharp"), "c" to snippets.getValue("c"))))

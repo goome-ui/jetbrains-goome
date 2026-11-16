@@ -46,6 +46,7 @@ Works in 2024.3 or newer. JetBrains Marketplace is coming soon.
 <br>
 
 <p align="center">
+<b>goome tool window</b> - the goome icon on the left stripe, right by Project. Quick actions, every <code>.goome.json</code> and <code>.goome-theme.json</code> in the project (click one to open it with the preview), the templates for each language (click one and New Project opens with it picked) and a snippet cheat sheet that drops the snippet into the file youre in<br>
 <b>Live templates</b> - type <code>goome</code> and pick one, or hit Tab after the full name. <code>goome-overlay</code> and <code>goome-app</code> are a whole program, <code>goome-loop</code> is the poll and pace loop, and theres one for every common widget, plus <code>goome-style</code>, <code>goome-custom</code>, <code>goome-offscreen</code>, <code>goome-hotkey</code>, <code>goome-theme-preset</code> and <code>goome-theme-make</code><br>
 <b>goome: New Project</b> - in <b>Tools > goome</b> or on the welcome screen. Pick a language, a template, a folder and a name. It runs <a href="https://github.com/goome-ui/goome-cli">goome-cli</a> and opens what it made. If <code>goome</code> isnt on your PATH it downloads goome.py from the latest goome-cli release and runs that with Python, so you dont have to install anything besides Python<br>
 <b>Preview</b> - open a <code>.goome.json</code> and you get the text on the left and the preview on the right. It draws the project with the UI builders own code and updates while you type. Its read only, <b>Open in UI builder</b> takes you to the real thing<br>

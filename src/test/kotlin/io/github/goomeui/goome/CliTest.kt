@@ -17,8 +17,18 @@ class CliTest : BasePlatformTestCase() {
 
     fun testArgs() {
         assertEquals(listOf("new", "hud1", "--lang", "csharp", "--template", "hud", "--dir", "/x/hud1"), GoomeCli.newArgs("hud1", "csharp", "hud", "/x/hud1"))
-        assertEquals(listOf("c", "csharp", "python", "java", "godot"), GoomeCli.LANGS.map { it.id })
+        assertEquals(listOf("c", "csharp", "python", "java", "godot", "rust", "node", "go", "zig", "lua"), GoomeCli.LANGS.map { it.id })
         assertEquals(listOf("app", "overlay", "mod-menu", "hud"), GoomeCli.TEMPLATES.map { it.id })
+    }
+
+    fun testLangsMatchTheCli() {
+        val cli = listOf(File(root.parentFile, "goome-cli/goome.py"), File(root, "deps/goome-cli/goome.py")).firstOrNull { it.exists() } ?: return
+        val text = cli.readText()
+        val block = text.substringAfter("LANGS = {").substringBefore("}")
+        val ids = Regex("^\\s*\"(\\w+)\":", RegexOption.MULTILINE).findAll(block).map { it.groupValues[1] }.toList()
+        assertEquals(ids, GoomeCli.LANGS.map { it.id })
+        val templates = text.substringAfter("TEMPLATES = {").substringBefore("}")
+        assertEquals(Regex("^\\s*\"([\\w-]+)\":", RegexOption.MULTILINE).findAll(templates).map { it.groupValues[1] }.toList(), GoomeCli.TEMPLATES.map { it.id })
     }
 
     fun testFreshScriptIsReused() {

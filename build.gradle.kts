@@ -46,6 +46,25 @@ tasks.withType<JavaCompile>().configureEach {
     options.release.set(21)
 }
 
+fun changeNotes(md: String): String {
+    fun esc(t: String) = t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    val out = StringBuilder()
+    var list = false
+    for (line in md.lines().map { it.trim() }) {
+        if (line.startsWith("- ")) {
+            if (!list) out.append("<ul>")
+            list = true
+            out.append("<li>").append(esc(line.drop(2))).append("</li>")
+            continue
+        }
+        if (list) out.append("</ul>")
+        list = false
+        if (line.startsWith("## ")) out.append("<h3>").append(esc(line.drop(3))).append("</h3>")
+    }
+    if (list) out.append("</ul>")
+    return out.toString()
+}
+
 val generated = layout.buildDirectory.dir("generated/goome")
 
 val syncGoome = tasks.register("syncGoome") {
@@ -73,6 +92,7 @@ intellijPlatform {
     pluginConfiguration {
         id = pluginId
         version = project.version.toString()
+        changeNotes = provider { changeNotes(file("CHANGELOG.md").readText()) }
         ideaVersion {
             sinceBuild = providers.gradleProperty("sinceBuild")
             untilBuild = provider { null }

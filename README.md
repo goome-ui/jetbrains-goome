@@ -11,6 +11,7 @@
 <p align="center">
   <img src="https://goome-ui.github.io/docs/assets/badges/jetbrains-2024-3.svg" alt="JetBrains 2024.3+">
   <a href="https://plugins.jetbrains.com/plugin/36174-goome"><img src="https://goome-ui.github.io/docs/assets/badges/jetbrains-marketplace.svg" alt="JetBrains Marketplace"></a>
+  <img src="https://goome-ui.github.io/docs/assets/badges/langs-10.svg" alt="10 languages">
   <img src="https://goome-ui.github.io/docs/assets/badges/license-gpl-3.svg" alt="GPL-3.0">
 </p>
 
@@ -46,10 +47,10 @@ Works in 2024.3 or newer.
 
 <p align="center">
 <b>goome tool window</b> - the goome icon on the left stripe, right by Project. Quick actions, every <code>.goome.json</code> and <code>.goome-theme.json</code> in the project (click one to open it with the preview), the templates for each language (click one and New Project opens with it picked) and a snippet cheat sheet that drops the snippet into the file youre in<br>
-<b>Live templates</b> - in all ten languages, as long as your IDE has that languages plugin. Type <code>goome</code> and pick one, or hit Tab after the full name. <code>goome-overlay</code> and <code>goome-app</code> are a whole program, <code>goome-loop</code> is the poll and pace loop, and theres one for every common widget, plus <code>goome-style</code>, <code>goome-custom</code>, <code>goome-offscreen</code>, <code>goome-hotkey</code>, <code>goome-theme-preset</code>, <code>goome-theme-make</code>, <code>goome-anim</code>, <code>goome-anim-color</code>, <code>goome-ease</code>, <code>goome-text-input</code>, <code>goome-a11y</code>, <code>goome-font-fallback</code> and <code>goome-text-dir</code>. Every language has 58 of them except GDScript, which has 57 (no <code>goome-offscreen</code>, a GoomeView cant push a click)<br>
+<b>Live templates</b> - in all ten languages, as long as your IDE has that languages plugin. Type <code>goome</code> and pick one, or hit Tab after the full name. <code>goome-overlay</code> and <code>goome-app</code> are a whole program, <code>goome-loop</code> is the poll and pace loop, and theres one for every common widget, plus <code>goome-style</code>, <code>goome-custom</code>, <code>goome-offscreen</code>, <code>goome-hotkey</code>, <code>goome-theme-preset</code>, <code>goome-theme-make</code>, <code>goome-anim</code>, <code>goome-anim-color</code>, <code>goome-ease</code>, <code>goome-text-input</code>, <code>goome-a11y</code>, <code>goome-font-fallback</code> and <code>goome-text-dir</code>. Every language has 58 of them. GDScript has no <code>goome-offscreen</code> (a GoomeView cant push a click) and has <code>goome-view</code> instead<br>
 <b>goome: New Project</b> - in <b>Tools > goome</b> or on the welcome screen. Pick one of the ten languages (C, C#, Python, Java, Godot, Rust, Node, Go, Zig, Lua), one of the four templates (app, overlay, mod-menu, hud), a folder and a name. It runs <a href="https://github.com/goome-ui/goome-cli">goome-cli</a> and opens what it made. If <code>goome</code> isnt on your PATH it downloads goome.py from the latest goome-cli release and runs that with Python, so you dont have to install anything besides Python<br>
 <b>Preview</b> - open a <code>.goome.json</code> and you get the text on the left and the preview on the right. It draws the project with the UI builders own code and updates while you type. Its read only, <b>Open in UI builder</b> takes you to the real thing<br>
-<b>Copy code</b> - the C, C#, Python, Java and GDScript buttons at the top of the preview put the builders generated code on your clipboard. Rust, JavaScript, Go, Zig and Lua get theirs when the builder has them<br>
+<b>Copy code</b> - the C, C#, Python, Java, GDScript, Rust, Node, Go, Zig and Lua buttons at the top of the preview put the builders generated code on your clipboard<br>
 <b>Quick docs</b> - put the caret on any <code>goome_*</code> function and hit Ctrl+Q (F1 on mac) for its signature, the note from goome.h and a link to the docs. In Rust, JavaScript, TypeScript, Go, Zig, Lua and GDScript files that mention goome it works on the binding names too (<code>ui.slider_int</code>, <code>ui.sliderInt</code>, <code>ui.SliderInt</code>), matched to the C function by name<br>
 <b>goome: Build for Web</b> - in <b>Tools > goome</b>, on the right click menu of a <code>.c</code> file and in the project view. Runs <code>goome build --web</code> in the background and leaves <code>index.html</code>, <code>goome.js</code> and <code>goome.wasm</code> in a <code>web</code> folder in your project. Errors come up as a notification and the full text goes to the <b>goome build</b> window at the bottom. When it works the notification has <b>Open in Browser</b> (starts <code>goome serve</code> on a free port and opens it) and <b>Show Folder</b>. <b>goome: Stop Web Server</b> stops it, closing the project does too. C only for now (the other languages are on the list), normal app windows only (no overlays or mod menus), and the app needs <code>goome_web_init</code> and <code>goome_web_frame</code>. You need clang and lld with the wasm target. Until the downloaded c-goome releases have the web build, point the c-goome checkout setting at a checkout of c-goome<br>
 <b>goome: Search Docs</b> - in <b>Tools > goome</b>. A searchable list of every goome function, picks the one under the caret, opens its docs page<br>
@@ -115,7 +116,7 @@ New Project works in every IDE and makes any of the ten. Live templates need the
 | --- | --- | --- |
 | Live templates | 58, in items and statements | RustRover, or CLion or IDEA Ultimate with the Rust plugin |
 | Quick docs | yes, by name | any |
-| Copy code | not yet, waiting on the builder | n/a |
+| Copy code | yes | any |
 | New Project | yes | any |
 | Build for Web | no | n/a |
 
@@ -125,7 +126,7 @@ New Project works in every IDE and makes any of the ten. Live templates need the
 | --- | --- | --- |
 | Live templates | 58, in .js and .ts files | WebStorm, or IDEA Ultimate with the JavaScript plugin |
 | Quick docs | yes, by name | any |
-| Copy code | not yet, waiting on the builder | n/a |
+| Copy code | yes | any |
 | New Project | yes | any |
 | Build for Web | no | n/a |
 
@@ -135,7 +136,7 @@ New Project works in every IDE and makes any of the ten. Live templates need the
 | --- | --- | --- |
 | Live templates | 58, in files and statements | GoLand, or IDEA Ultimate with the Go plugin |
 | Quick docs | yes, by name | any |
-| Copy code | not yet, waiting on the builder | n/a |
+| Copy code | yes | any |
 | New Project | yes | any |
 | Build for Web | no | n/a |
 
@@ -145,7 +146,7 @@ New Project works in every IDE and makes any of the ten. Live templates need the
 | --- | --- | --- |
 | Live templates | 58, the plugin has no zig context so they sit in Other | the ZigBrains plugin |
 | Quick docs | yes, by name | any |
-| Copy code | not yet, waiting on the builder | n/a |
+| Copy code | yes | any |
 | New Project | yes | any |
 | Build for Web | no | n/a |
 
@@ -155,7 +156,7 @@ New Project works in every IDE and makes any of the ten. Live templates need the
 | --- | --- | --- |
 | Live templates | 58 | the EmmyLua plugin |
 | Quick docs | yes, by name | any |
-| Copy code | not yet, waiting on the builder | n/a |
+| Copy code | yes | any |
 | New Project | yes | any |
 | Build for Web | no | n/a |
 
@@ -163,7 +164,7 @@ New Project works in every IDE and makes any of the ten. Live templates need the
 
 | What | Status | Needs |
 | --- | --- | --- |
-| Live templates | 57 | Rider, which has Godot Support built in |
+| Live templates | 58 | Rider, which has Godot Support built in |
 | Quick docs | yes, by name | any |
 | Copy code | yes | any |
 | New Project | yes | any |

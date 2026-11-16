@@ -115,7 +115,8 @@ class PluginTest : BasePlatformTestCase() {
     fun testPreviewPage() {
         val html = PreviewPage.html("SEND(m)")
         assertTrue(html.contains("window.goomeSend = function (m) { SEND(m) };"))
-        for (lang in listOf("c", "cs", "py", "java", "gd")) assertTrue(html.contains("data-copy=\"$lang\""))
+        for (lang in listOf("c", "cs", "py", "java", "gd", "rust", "node", "go", "zig", "lua")) assertTrue(html.contains("data-copy=\"$lang\""))
+        assertEquals(10, Regex("data-copy=").findAll(html).count())
         assertTrue(html.contains("GMCode"))
         assertTrue(html.contains("window.goomeLoad"))
         assertTrue(html.contains("Open in UI builder"))

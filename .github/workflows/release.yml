@@ -1,0 +1,40 @@
+name: release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  zip:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: gradle.properties says the right version
+        run: |
+          v=$(sed -n 's/^pluginVersion=//p' gradle.properties)
+          [ "$v" = "${TAG#v}" ] || { echo "gradle.properties is $v, not ${TAG#v}"; exit 1; }
+      - name: goome sources
+        run: |
+          mkdir -p deps
+          for r in docs c-goome; do
+            git clone -q --depth 1 "https://github.com/goome-ui/$r.git" "deps/$r"
+          done
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - uses: gradle/actions/setup-gradle@v5
+      - run: ./gradlew --no-daemon buildPlugin test
+      - name: upload
+        run: |
+          f="build/distributions/jetbrains-goome-${TAG#v}.zip"
+          [ -f "$f" ] || { ls build/distributions; exit 1; }
+          gh release view "$TAG" > /dev/null 2>&1 || gh release create "$TAG" --verify-tag --title "jetbrains-goome ${TAG#v}" --notes "jetbrains-goome ${TAG#v}. Grab the .zip below, then Settings > Plugins > the gear > Install Plugin from Disk... and pick it. Dont unzip it."
+          gh release upload "$TAG" "$f" --clobber

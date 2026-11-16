@@ -38,6 +38,7 @@ kotlin {
         apiVersion.set(KotlinVersion.KOTLIN_2_0)
         languageVersion.set(KotlinVersion.KOTLIN_2_0)
         freeCompilerArgs.add("-Xjdk-release=21")
+        freeCompilerArgs.add("-jvm-default=no-compatibility")
     }
 }
 
@@ -77,6 +78,10 @@ intellijPlatform {
             untilBuild = provider { null }
         }
     }
+    publishing {
+        token = providers.environmentVariable("PUBLISH_TOKEN")
+        channels = listOf("default")
+    }
     pluginVerification {
         ides {
             val want = providers.gradleProperty("verifyIde").orNull
@@ -86,6 +91,10 @@ intellijPlatform {
             }
         }
     }
+}
+
+tasks.publishPlugin {
+    providers.gradleProperty("publishZip").orNull?.let { archiveFile.set(layout.projectDirectory.file(it)) }
 }
 
 tasks.test {

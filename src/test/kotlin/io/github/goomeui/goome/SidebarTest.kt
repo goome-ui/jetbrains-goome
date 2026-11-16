@@ -1,5 +1,6 @@
 package io.github.goomeui.goome
 
+import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import io.github.goomeui.goome.sidebar.GoomeSidebar
 import io.github.goomeui.goome.sidebar.GoomeSidebar.FileRef
@@ -101,7 +102,8 @@ class SidebarTest {
     @Test
     fun iconsAreThere() {
         val res = File(root, "src/main/resources")
-        for (p in listOf("icons/toolWindow.svg", "icons/toolWindow_dark.svg", "expui/toolwindow/goome.svg", "expui/toolwindow/goome_dark.svg",
+        val tw = "icons/expui/toolwindow/toolWindowGoome"
+        for (p in listOf("icons/toolWindowGoome.svg", "icons/toolWindowGoome_dark.svg", "$tw.svg", "${tw}_dark.svg", "$tw@20x20.svg", "$tw@20x20_dark.svg",
             "icons/goome.svg", "icons/goome_dark.svg", "META-INF/pluginIcon.svg", "META-INF/pluginIcon_dark.svg")) {
             val f = File(res, p)
             assertTrue(p, f.isFile)
@@ -109,11 +111,23 @@ class SidebarTest {
             val want = when {
                 p.startsWith("icons/toolWindow") -> "13"
                 p.startsWith("META-INF") -> "40"
+                "@20x20" in p -> "20"
                 else -> "16"
             }
             assertEquals(p, listOf(want, want), size.drop(1))
         }
-        val map = JsonParser.parseString(File(res, "goomeIconMappings.json").readText()).asJsonObject
-        assertEquals("icons/toolWindow.svg", map.getAsJsonObject("icons").getAsJsonObject("expui").getAsJsonObject("toolwindow").get("goome.svg").asString)
+        val map = JsonParser.parseString(File(res, "GoomeIconMappings.json").readText()).asJsonObject
+        val pairs = mutableListOf<Pair<String, String>>()
+        fun walk(o: JsonObject, dir: String) {
+            for ((k, v) in o.entrySet()) {
+                if (v.isJsonObject) walk(v.asJsonObject, "$dir$k/") else pairs += "$dir$k" to v.asString
+            }
+        }
+        walk(map, "")
+        assertEquals(listOf("$tw.svg" to "icons/toolWindowGoome.svg"), pairs)
+        for ((newUi, classic) in pairs) {
+            assertTrue(newUi, File(res, newUi).isFile)
+            assertTrue(classic, File(res, classic).isFile)
+        }
     }
 }

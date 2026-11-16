@@ -2,7 +2,7 @@
   "icons": {
     "expui": {
       "toolwindow": {
-        "goome.svg": "icons/toolWindow.svg"
+        "toolWindowGoome.svg": "icons/toolWindowGoome.svg"
       }
     }
   }

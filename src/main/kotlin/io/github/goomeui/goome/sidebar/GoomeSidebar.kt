@@ -27,11 +27,19 @@ object GoomeSidebar {
     const val SEARCH_DOCS = "search"
     const val DOCS = "docs"
 
-    val SNIPPET_LANGS = linkedMapOf("c" to "C", "csharp" to "C#", "python" to "Python", "java" to "Java")
-    val LIVE_GROUPS = mapOf("c" to "goome C", "java" to "goome Java", "python" to "goome Python")
+    val SNIPPET_LANGS = linkedMapOf(
+        "c" to "C", "csharp" to "C#", "python" to "Python", "java" to "Java",
+        "rust" to "Rust", "node" to "JavaScript", "go" to "Go", "zig" to "Zig", "lua" to "Lua", "godot" to "GDScript",
+    )
+    val LIVE_GROUPS = mapOf(
+        "c" to "goome C", "java" to "goome Java", "python" to "goome Python",
+        "rust" to "goome Rust", "node" to "goome JavaScript", "go" to "goome Go", "zig" to "goome Zig", "lua" to "goome Lua", "godot" to "goome GDScript",
+    )
     private val EXTS = mapOf(
         "c" to "c", "h" to "c", "cpp" to "c", "cc" to "c", "cxx" to "c", "hpp" to "c", "hh" to "c",
         "cs" to "csharp", "py" to "python", "pyw" to "python", "java" to "java",
+        "rs" to "rust", "js" to "node", "mjs" to "node", "cjs" to "node", "jsx" to "node", "ts" to "node", "mts" to "node", "cts" to "node", "tsx" to "node",
+        "go" to "go", "zig" to "zig", "lua" to "lua", "gd" to "godot",
     )
 
     private val snippetCache = mutableMapOf<String, List<Snippet>>()

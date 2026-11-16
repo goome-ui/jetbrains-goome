@@ -81,6 +81,7 @@ class GoomeSettings : PersistentStateComponent<GoomeSettings.Data> {
     class Data {
         var cli: String = ""
         var python: String = ""
+        var goomeSrc: String = ""
     }
 
     private var data = Data()
@@ -106,6 +107,10 @@ class GoomeConfigurable : BoundConfigurable("goome") {
         row("Python:") {
             textField().bindText(s::python).align(AlignX.FILL)
                 .comment("Empty = <code>python3</code>, <code>python</code> or <code>py -3</code>")
+        }
+        row("c-goome checkout:") {
+            textField().bindText(s::goomeSrc).align(AlignX.FILL)
+                .comment("Folder of a c-goome checkout, used by Build for Web (<code>goome build --web --goome</code>). Empty = let goome-cli download one")
         }
     }
 }

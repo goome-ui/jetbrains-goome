@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.5.2
 
 - live templates for Rust, JavaScript and TypeScript (Node), Go, Zig, Lua and GDScript, with the real names and argument orders of each binding. the same goome-* prefixes as the other languages, 58 of them (GDScript has goome-view instead of goome-offscreen, a GoomeView cant push a click)
 - they show up in the IDE that has that languages plugin: RustRover or the Rust plugin, WebStorm or the JavaScript plugin, GoLand or the Go plugin, ZigBrains for Zig, EmmyLua for Lua and Godot Support (built into Rider) for GDScript. without the plugin they just arent loaded and nothing breaks

@@ -60,7 +60,7 @@ class PluginTest : BasePlatformTestCase() {
         val settings = TemplateSettings.getInstance()
         assertNotNull(settings.getTemplate("goome-button", "goome Java"))
         assertNotNull(settings.getTemplate("goome-overlay", "goome Java"))
-        assertEquals(51, settings.templates.count { it.groupName == "goome Java" })
+        assertEquals(58, settings.templates.count { it.groupName == "goome Java" })
     }
 
     fun testJavaTemplateExpands() {

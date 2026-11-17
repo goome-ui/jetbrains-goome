@@ -12,6 +12,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.fileEditor.FileDocumentManager
+import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.DumbAware
@@ -78,7 +79,7 @@ class WebBuildAction : AnAction(), DumbAware {
     override fun getActionUpdateThread() = ActionUpdateThread.BGT
 
     override fun update(e: AnActionEvent) {
-        val inMenu = e.place == ActionPlaces.EDITOR_POPUP || e.place == ActionPlaces.PROJECT_VIEW_POPUP
+        val inMenu = e.place == ActionPlaces.EDITOR_POPUP || e.place == ActionPlaces.PROJECT_VIEW_POPUP || e.place.contains("Popup")
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE)
         e.presentation.isEnabledAndVisible = e.project != null && (!inMenu || (file != null && !file.isDirectory && WebBuild.isC(file.name)))
     }
@@ -91,6 +92,12 @@ class WebBuildAction : AnAction(), DumbAware {
     }
 
     companion object {
+        fun startFromEditor(project: Project) {
+            FileDocumentManager.getInstance().saveAllDocuments()
+            val file = FileEditorManager.getInstance(project).selectedFiles.firstOrNull { !it.isDirectory && WebBuild.isC(it.name) }
+            start(project, file?.path)
+        }
+
         fun start(project: Project, file: String?) {
             val base = File(project.basePath ?: File(file ?: ".").absoluteFile.parent)
             val goome = GoomeSettings.get().goomeSrc

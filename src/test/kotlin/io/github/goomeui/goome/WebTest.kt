@@ -54,6 +54,7 @@ class WebTest : BasePlatformTestCase() {
         assertEquals(listOf("build", "--web", "/p/main.c", "--out", "/p/web", "--goome", "/src/c-goome"), WebBuild.buildArgs("/p/main.c", "/p/web", " /src/c-goome "))
         assertEquals(listOf("serve", "/p/web", "--port", "8123"), WebBuild.serveArgs("/p/web", 8123))
         assertTrue(WebBuild.isC("main.c"))
+        assertTrue(WebBuild.isC("util.h"))
         assertFalse(WebBuild.isC("main.cpp"))
         assertFalse(WebBuild.isC(null))
     }

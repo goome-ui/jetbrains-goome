@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.3
+
+- Build for Web is in the goome tool window now, under Quick actions after Open UI builder. it builds the .c file open in the editor, or lets goome-cli find main.c, src/main.c or app.c when none is open, and a CLI error shows up as a notification
+- the right click menu entry also shows for .h files and in Rider
+
 ## 0.5.2
 
 - live templates for Rust, JavaScript and TypeScript (Node), Go, Zig, Lua and GDScript, with the real names and argument orders of each binding. the same goome-* prefixes as the other languages, 58 of them (GDScript has goome-view instead of goome-offscreen, a GoomeView cant push a click)

@@ -47,7 +47,7 @@ object WebBuild {
 
     var exec: Exec = realExec
 
-    fun isC(name: String?) = name != null && name.endsWith(".c")
+    fun isC(name: String?) = name != null && (name.endsWith(".c") || name.endsWith(".h"))
 
     fun outDir(base: File) = File(base, "web")
 

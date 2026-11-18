@@ -9,10 +9,10 @@
 </p>
 
 <p align="center">
-  <img src="https://goome-ui.github.io/docs/assets/badges/jetbrains-2024-3.svg" alt="JetBrains 2024.3+">
-  <a href="https://plugins.jetbrains.com/plugin/36174-goome"><img src="https://goome-ui.github.io/docs/assets/badges/jetbrains-marketplace.svg" alt="JetBrains Marketplace"></a>
-  <img src="https://goome-ui.github.io/docs/assets/badges/langs-10.svg" alt="10 languages">
-  <img src="https://goome-ui.github.io/docs/assets/badges/license-gpl-3.svg" alt="GPL-3.0">
+  <img src="https://goome.wtf/badges/jetbrains-2024-3.svg" alt="JetBrains 2024.3+">
+  <a href="https://plugins.jetbrains.com/plugin/36174-goome"><img src="https://goome.wtf/badges/jetbrains-marketplace.svg" alt="JetBrains Marketplace"></a>
+  <img src="https://goome.wtf/badges/langs-10.svg" alt="10 languages">
+  <img src="https://goome.wtf/badges/license-gpl-3.svg" alt="GPL-3.0">
 </p>
 
 <p align="center">
@@ -22,9 +22,9 @@
 </p>
 
 <p align="center">
-  <a href="https://goome-ui.github.io/docs/">Docs</a> &nbsp;·&nbsp;
+  <a href="https://goome.wtf/docs/">Docs</a> &nbsp;·&nbsp;
   <a href="https://github.com/goome-ui/c-goome">goome</a> &nbsp;·&nbsp;
-  <a href="https://goome-ui.github.io/docs/builder/">UI builder</a> &nbsp;·&nbsp;
+  <a href="https://goome.wtf/builder/">UI builder</a> &nbsp;·&nbsp;
   <a href="https://github.com/goome-ui/goome-cli">goome-cli</a>
 </p>
 

@@ -1,9 +1,9 @@
 <idea-plugin>
     <id>io.github.goomeui.goome</id>
     <name>goome</name>
-    <vendor url="https://goome-ui.github.io/docs/">goome-ui</vendor>
+    <vendor url="https://goome.wtf/docs/">goome-ui</vendor>
     <description><![CDATA[
-<p>Live templates, a new project action, a .goome.json preview and quick docs for <a href="https://goome-ui.github.io/docs/">goome</a>. See-through overlays, normal app windows, game mod menus and engine ui. One file, no dependencies, Linux, Windows, Mac.</p>
+<p>Live templates, a new project action, a .goome.json preview and quick docs for <a href="https://goome.wtf/docs/">goome</a>. See-through overlays, normal app windows, game mod menus and engine ui. One file, no dependencies, Linux, Windows, Mac.</p>
 <ul>
 <li>type <code>goome</code> in C, C#, Python, Java, Rust, JavaScript, TypeScript, Go, Zig, Lua or GDScript and pick a template, with the real names of each binding. C, C#, Python and Java use the same names as the VS Code extension</li>
 <li>a goome tool window on the left, next to Project: quick actions, every .goome.json in the project, templates that start New Project with them picked, and a snippet cheat sheet</li>

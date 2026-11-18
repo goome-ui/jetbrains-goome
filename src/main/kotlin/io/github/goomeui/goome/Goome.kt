@@ -21,8 +21,8 @@ import com.jetbrains.jsonSchema.impl.JsonSchemaVersion
 import javax.swing.Icon
 
 object Goome {
-    const val DOCS_URL = "https://goome-ui.github.io/docs/"
-    const val BUILDER_URL = "https://goome-ui.github.io/docs/builder/"
+    const val DOCS_URL = "https://goome.wtf/docs/"
+    const val BUILDER_URL = "https://goome.wtf/builder/"
     const val PROJECT_SUFFIX = ".goome.json"
     const val THEME_SUFFIX = ".goome-theme.json"
     val ICON: Icon = IconLoader.getIcon("/icons/goome.svg", Goome::class.java)

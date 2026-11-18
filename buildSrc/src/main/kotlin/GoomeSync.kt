@@ -4,7 +4,7 @@ import java.io.File
 import java.util.UUID
 
 object GoomeSync {
-    const val DOCS_URL = "https://goome-ui.github.io/docs/"
+    const val DOCS_URL = "https://goome.wtf/docs/"
     val BUILDER_FILES = listOf("model.js", "codegen.js", "elements.js", "app.js", "stage.js", "vars.js", "style.css", "elements.css")
     val LANGS = listOf("c", "csharp", "python", "java", "rust", "node", "go", "zig", "lua", "godot")
     val TEMPLATE_LANGS = listOf("c", "java", "python", "rust", "node", "go", "zig", "lua", "godot")

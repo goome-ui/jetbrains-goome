@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.7
+
+- new Update goome button: checks the newest goome for your project and bumps it, it is in the goome tool window and Tools > goome, asks before it changes anything and before it runs the restore command
+- needs goome-cli 0.5.7, the button offers to update the cli for you
+
 ## 0.5.5
 
 - the docs buttons, quick docs and the vendor link point at goome.wtf now, the old github.io links were broken

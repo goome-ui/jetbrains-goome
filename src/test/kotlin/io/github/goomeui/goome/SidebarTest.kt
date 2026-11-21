@@ -28,8 +28,8 @@ class SidebarTest {
     @Test
     fun quickActions() {
         val q = GoomeSidebar.quickActions()
-        assertEquals(listOf("New Project", "Open UI builder", "Build for Web", "Search docs", "Open docs"), q.map { it.label })
-        assertEquals(listOf(GoomeSidebar.NEW_PROJECT, GoomeSidebar.BUILDER, GoomeSidebar.BUILD_WEB, GoomeSidebar.SEARCH_DOCS, GoomeSidebar.DOCS), q.map { it.arg })
+        assertEquals(listOf("New Project", "Open UI builder", "Build for Web", "Update goome", "Search docs", "Open docs"), q.map { it.label })
+        assertEquals(listOf(GoomeSidebar.NEW_PROJECT, GoomeSidebar.BUILDER, GoomeSidebar.BUILD_WEB, GoomeSidebar.UPDATE_GOOME, GoomeSidebar.SEARCH_DOCS, GoomeSidebar.DOCS), q.map { it.arg })
     }
 
     @Test

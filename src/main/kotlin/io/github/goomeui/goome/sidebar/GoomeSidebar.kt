@@ -25,6 +25,7 @@ object GoomeSidebar {
     const val NEW_PROJECT = "new"
     const val BUILDER = "builder"
     const val BUILD_WEB = "buildweb"
+    const val UPDATE_GOOME = "update"
     const val SEARCH_DOCS = "search"
     const val DOCS = "docs"
 
@@ -51,6 +52,7 @@ object GoomeSidebar {
         Item("quick/new", "New Project", Kind.ACTION, "make a goome project with goome-cli", NEW_PROJECT),
         Item("quick/builder", "Open UI builder", Kind.ACTION, "in the browser", BUILDER),
         Item("quick/buildweb", "Build for Web", Kind.ACTION, "compile a C app to WebAssembly", BUILD_WEB),
+        Item("quick/update", "Update goome", Kind.ACTION, "bump goome in this project to the newest version", UPDATE_GOOME),
         Item("quick/search", "Search docs", Kind.ACTION, "find a goome function", SEARCH_DOCS),
         Item("quick/docs", "Open docs", Kind.ACTION, Goome.DOCS_URL, DOCS),
     )

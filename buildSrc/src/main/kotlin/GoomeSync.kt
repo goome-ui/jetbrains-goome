@@ -260,7 +260,7 @@ object GoomeSync {
             }
         }
         val call = Regex("\\b(goome_\\w+)\\s*\\(")
-        for (f in files.filterNot { it.name.startsWith("api-") }) {
+        for (f in files.filterNot { it.name.startsWith("api-") || it.name == "index.md" }) {
             val slug = f.name.removeSuffix(".md")
             for (m in call.findAll(f.readText())) pages.putIfAbsent(m.groupValues[1], "$slug/")
         }

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.5
+
+- the docs buttons, quick docs and the vendor link point at goome.wtf now, the old github.io links were broken
+- Build for Web tells you it only works for C apps when you run it on another language, and says why
+- new window flag GOOME_WINDOW_NO_CONSOLE
+- quick docs no longer sends a few functions to a page that doesnt exist
+
 ## 0.5.3
 
 - Build for Web is in the goome tool window now, under Quick actions after Open UI builder. it builds the .c file open in the editor, or lets goome-cli find main.c, src/main.c or app.c when none is open, and a CLI error shows up as a notification

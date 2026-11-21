@@ -83,6 +83,44 @@ class WebTest : BasePlatformTestCase() {
         assertEquals("goome: no clang found, building for the web needs one.", WebBuild.firstLine(res.text))
     }
 
+    fun testOtherLanguagesGetTheFriendlyMessage() {
+        val base = scratch()
+        var ran = false
+        WebBuild.exec = WebBuild.Exec { _, _ ->
+            ran = true
+            WebBuild.Out(0, "", "")
+        }
+        val files = mapOf("Program.cs" to "C#", "a.py" to "Python", "A.java" to "Java", "A.kt" to "Kotlin", "m.rs" to "Rust", "m.go" to "Go", "m.zig" to "Zig", "m.lua" to "Lua", "a.js" to "JavaScript", "a.ts" to "TypeScript", "m.gd" to "GDScript")
+        for ((name, lang) in files) {
+            val res = WebBuild.build(runner, File(base, name).path, base, "")
+            val text = (res as WebBuild.Result.Failed).text
+            assertTrue(text, text.contains("only works for C apps right now, this looks like a $lang project"))
+            assertTrue(text.contains("https://goome.wtf/builder/") && text.contains("https://goome.wtf/docs/browser/"))
+        }
+        val projects = mapOf("App.csproj" to "C#", "pyproject.toml" to "Python", "requirements.txt" to "Python", "build.gradle" to "Java", "Cargo.toml" to "Rust", "go.mod" to "Go", "build.zig" to "Zig", "a-1.rockspec" to "Lua", "package.json" to "JavaScript", "project.godot" to "Godot")
+        for ((name, lang) in projects) {
+            val dir = scratch()
+            File(dir, name).writeText("x")
+            val res = WebBuild.build(runner, null, dir, "")
+            assertTrue((res as WebBuild.Result.Failed).text.contains("this looks like a $lang project"))
+        }
+        assertFalse(ran)
+    }
+
+    fun testCAppStillBuilds() {
+        val base = scratch()
+        File(base, "package.json").writeText("{}")
+        File(base, "main.c").writeText("int main(void){return 0;}")
+        var ran = false
+        WebBuild.exec = WebBuild.Exec { _, _ ->
+            ran = true
+            WebBuild.Out(0, "built", "")
+        }
+        assertTrue(WebBuild.build(runner, null, base, "") is WebBuild.Result.Ok)
+        assertTrue(WebBuild.build(runner, File(base, "weird.cc").path, base, "") is WebBuild.Result.Ok)
+        assertTrue(ran)
+    }
+
     fun testBuildEdgeCases() {
         val base = scratch()
         WebBuild.exec = WebBuild.Exec { _, _ -> WebBuild.Out(2, "", "") }

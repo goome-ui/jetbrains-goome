@@ -49,6 +49,36 @@ object WebBuild {
 
     fun isC(name: String?) = name != null && (name.endsWith(".c") || name.endsWith(".h"))
 
+    private val extLang = mapOf(
+        "cs" to "C#", "py" to "Python", "java" to "Java", "kt" to "Kotlin", "rs" to "Rust", "go" to "Go", "zig" to "Zig",
+        "lua" to "Lua", "js" to "JavaScript", "mjs" to "JavaScript", "ts" to "TypeScript", "gd" to "GDScript",
+    )
+
+    private val fileLang = listOf(
+        "project.godot" to "Godot", "Cargo.toml" to "Rust", "go.mod" to "Go", "build.zig" to "Zig",
+        "pyproject.toml" to "Python", "requirements.txt" to "Python", "build.gradle" to "Java",
+        "build.gradle.kts" to "Kotlin", "pom.xml" to "Java", "package.json" to "JavaScript",
+    )
+
+    fun languageOfFile(name: String): String? = extLang[name.substringAfterLast('.', "").lowercase()]
+
+    fun languageOfFolder(names: List<String>): String? {
+        if (names.any { it.endsWith(".csproj", true) || it.endsWith(".sln", true) }) return "C#"
+        if (names.any { it.endsWith(".rockspec", true) }) return "Lua"
+        return fileLang.firstOrNull { it.first in names }?.second
+    }
+
+    fun notCMessage(lang: String) =
+        "goome: building for the web only works for C apps right now, this looks like a $lang project. " +
+            "the web build compiles C, so the same app needs to be written in C to go in the browser. " +
+            "try it live at https://goome.wtf/builder/ or see https://goome.wtf/docs/browser/"
+
+    fun otherLanguage(file: String?, base: File): String? {
+        if (!file.isNullOrBlank()) return languageOfFile(File(file).name)
+        if (listOf("main.c", "src/main.c", "app.c", "src/app.c").any { File(base, it).isFile }) return null
+        return languageOfFolder(base.list()?.toList() ?: emptyList())
+    }
+
     fun outDir(base: File) = File(base, "web")
 
     fun buildArgs(file: String?, out: String, goome: String): List<String> {
@@ -69,6 +99,7 @@ object WebBuild {
     fun firstLine(text: String) = text.lines().firstOrNull { it.isNotBlank() }?.trim() ?: text
 
     fun build(r: GoomeCli.Runner, file: String?, base: File, goome: String, indicator: ProgressIndicator? = null): Result {
+        otherLanguage(file, base)?.let { return Result.Failed(notCMessage(it)) }
         val out = outDir(base)
         val cmd = GeneralCommandLine(listOf(r.cmd) + r.pre + buildArgs(file, out.path, goome)).withWorkDirectory(base)
         val o = try {

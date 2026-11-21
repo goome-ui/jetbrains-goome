@@ -86,7 +86,7 @@ class WebBuildAction : AnAction(), DumbAware {
 
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val file = e.getData(CommonDataKeys.VIRTUAL_FILE)?.takeIf { !it.isDirectory && WebBuild.isC(it.name) }
+        val file = e.getData(CommonDataKeys.VIRTUAL_FILE)?.takeIf { !it.isDirectory && (WebBuild.isC(it.name) || WebBuild.languageOfFile(it.name) != null) }
         FileDocumentManager.getInstance().saveAllDocuments()
         start(project, file?.path)
     }
@@ -94,7 +94,7 @@ class WebBuildAction : AnAction(), DumbAware {
     companion object {
         fun startFromEditor(project: Project) {
             FileDocumentManager.getInstance().saveAllDocuments()
-            val file = FileEditorManager.getInstance(project).selectedFiles.firstOrNull { !it.isDirectory && WebBuild.isC(it.name) }
+            val file = FileEditorManager.getInstance(project).selectedFiles.firstOrNull { !it.isDirectory && (WebBuild.isC(it.name) || WebBuild.languageOfFile(it.name) != null) }
             start(project, file?.path)
         }
 

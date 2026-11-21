@@ -32,6 +32,7 @@ import com.intellij.ui.content.ContentFactory
 import com.intellij.ui.treeStructure.Tree
 import com.intellij.util.concurrency.AppExecutorUtil
 import io.github.goomeui.goome.Goome
+import io.github.goomeui.goome.web.UpgradeAction
 import io.github.goomeui.goome.web.WebBuildAction
 import io.github.goomeui.goome.GoomeProjectFileType
 import io.github.goomeui.goome.GoomeThemeFileType
@@ -172,6 +173,7 @@ class GoomePanel(private val project: Project, private val parent: Disposable) {
                 GoomeSidebar.BUILDER -> BrowserUtil.browse(Goome.BUILDER_URL)
                 GoomeSidebar.SEARCH_DOCS -> SearchDocsAction.show(FileEditorManager.getInstance(project).selectedTextEditor, component)
                 GoomeSidebar.BUILD_WEB -> WebBuildAction.startFromEditor(project)
+                GoomeSidebar.UPDATE_GOOME -> UpgradeAction.start(project)
                 GoomeSidebar.DOCS -> BrowserUtil.browse(Goome.DOCS_URL)
             }
             Kind.FILE -> VirtualFileManager.getInstance().findFileByUrl(item.arg)?.let { FileEditorManager.getInstance(project).openFile(it, true) }
@@ -217,6 +219,7 @@ class GoomePanel(private val project: Project, private val parent: Disposable) {
                     GoomeSidebar.NEW_PROJECT -> AllIcons.General.Add
                     GoomeSidebar.SEARCH_DOCS -> AllIcons.Actions.Search
                     GoomeSidebar.BUILD_WEB -> AllIcons.Actions.Compile
+                    GoomeSidebar.UPDATE_GOOME -> AllIcons.Actions.Download
                     else -> AllIcons.General.Web
                 }
                 Kind.FILE -> Goome.ICON

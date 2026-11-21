@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- new Update goome button, bumps goome in your project to the newest version. it is in the goome tool window and Tools > goome, asks before it changes anything and before it runs the restore command
+
 ## 0.5.5
 
 - the docs buttons, quick docs and the vendor link point at goome.wtf now, the old github.io links were broken

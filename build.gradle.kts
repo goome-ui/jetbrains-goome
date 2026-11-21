@@ -72,7 +72,7 @@ val syncGoome = tasks.register("syncGoome") {
     val out = generated.get().asFile
     inputs.dir("snippets")
     inputs.dir("schemas")
-    listOf("GOOME_DOCS", "GOOME_C").forEach { inputs.property(it, System.getenv(it) ?: "") }
+    listOf("GOOME_DOCS", "GOOME_WEBSITE", "GOOME_C").forEach { inputs.property(it, System.getenv(it) ?: "") }
     outputs.dir(out)
     outputs.upToDateWhen { false }
     doLast {

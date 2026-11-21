@@ -280,9 +280,9 @@ object GoomeSync {
     fun run(root: File, out: File, pluginId: String) {
         val docs = find(System.getenv("GOOME_DOCS"), root, listOf("goome-docs", "docs"))
         val cgoome = find(System.getenv("GOOME_C"), root, listOf("c-goome"))
-        val builder = docs?.resolve("builder")
-        if (builder == null || !builder.resolve("model.js").exists())
-            throw IllegalStateException("cant find goome-docs/builder. put goome-docs (or docs) next to this folder, in deps/, or set GOOME_DOCS")
+        val website = find(System.getenv("GOOME_WEBSITE"), root, listOf("website", "website-source"))
+        val builder = listOfNotNull(docs?.resolve("builder"), website?.resolve("src/builder")).firstOrNull { it.resolve("model.js").exists() }
+            ?: throw IllegalStateException("cant find the builder. put website next to this folder, in deps/, or set GOOME_WEBSITE")
         val header = cgoome?.resolve("include/goome.h")
         if (header == null || !header.exists())
             throw IllegalStateException("cant find c-goome/include/goome.h. put c-goome next to this folder, in deps/, or set GOOME_C")

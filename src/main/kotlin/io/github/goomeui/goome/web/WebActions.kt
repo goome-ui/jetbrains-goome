@@ -17,6 +17,7 @@ import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.DumbAware
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowFactory
@@ -34,7 +35,7 @@ class WebLogToolWindowFactory : ToolWindowFactory, DumbAware {
 
 object WebNotes {
     fun note(project: Project, text: String, type: NotificationType, vararg actions: NotificationAction): Notification {
-        val n = NotificationGroupManager.getInstance().getNotificationGroup("goome.web").createNotification("goome", text, type)
+        val n = NotificationGroupManager.getInstance().getNotificationGroup("goome.web").createNotification("goome", StringUtil.escapeXmlEntities(text), type)
         actions.forEach { n.addAction(it) }
         n.notify(project)
         return n

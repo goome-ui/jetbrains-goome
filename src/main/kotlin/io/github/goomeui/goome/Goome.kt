@@ -10,6 +10,7 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.options.BoundConfigurable
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.IconLoader
+import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.ui.dsl.builder.AlignX
 import com.intellij.ui.dsl.builder.bindText
@@ -30,7 +31,7 @@ object Goome {
     fun isProject(file: VirtualFile?) = file != null && file.name.endsWith(PROJECT_SUFFIX)
 
     fun say(project: Project?, text: String, type: NotificationType = NotificationType.INFORMATION) {
-        NotificationGroupManager.getInstance().getNotificationGroup("goome").createNotification("goome", text, type).notify(project)
+        NotificationGroupManager.getInstance().getNotificationGroup("goome").createNotification("goome", StringUtil.escapeXmlEntities(text), type).notify(project)
     }
 }
 
